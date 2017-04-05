@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - ADMIN</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/angular")
+
+    <style>
+        {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-image: url('../../images/telkom3.jpg');
+            background-repeat: no-repeat fixed center;
+            background-position: center;
+            background-size: 100%;
+        }
+
+        img {
+            filter: alpha(opacity=20); /* For IE8 and earlier */
+        }
+    </style>
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Application name</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Home/Contact">Contact</a></li>
+                </ul>
+                <form action="/Account/LogOff" class="navbar-right" id="logoutForm" method="post"><input name="__RequestVerificationToken" type="hidden" value="_VaOcp_pESbKYel_sxXkKlZGLZZyHyWLBKnthFaC3Q8s3aMVGClx-eWurwo9bUMBHdnMiviTmp9d4No_h0Xt2llv1ORAIKitqsQxwD8mYACKgU8oLE2z-gm4q8J4Vq8ifjXMAkAclYu5e1nm61yQbw2">    <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a href="/Manage" title="Manage">Hello ocph23@gmail.com!</a>
+        </li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+    </ul>
+</form>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Event Organizer - Heri</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+  
+    @RenderSection("scripts", required: false)
+</body>
+</html>

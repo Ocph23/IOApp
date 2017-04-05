@@ -1,0 +1,470 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Company.cshtml";
+}
+
+<h2>Perusahaan</h2>
+
+
+<div ng-app="Company" class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Menu
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="nav nav-tabs nav-stacked nav-pills">
+                        <li><a href="#Index">Index</a></li>
+                        <li><a href="#Layanan">Layanan</a></li>
+                        <li><a href="#Pesanan">Pesanan</a></li>
+                        <li>
+                            <a href="#Inbox">
+                                Inbox
+                                <i></i> <span class="badge pull-right">{{InboxCount}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-10">
+            <div ng-view></div>
+        </div>
+    </div>
+
+
+
+    <script type="text/ng-template" id="MenuView.htm">
+        {{Judul}}
+    </script>
+
+    <!--Kategories View-->
+    <script type="text/ng-template" id="LayananView.htm">
+        <div class="list-group" ng-init="Init()">
+            <div class="list-group-item active">{{Judul}}</div>
+            <div class="list-group-item">
+                <div class="btn-group">
+
+                    <button class="btn btn-primary" type="button" id="modal-13567" href="#modal-container-13567" role="button" data-toggle="modal">
+                        <em class="glyphicon glyphicon-plus-sign"></em> Tambah
+                    </button>
+
+                </div>
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            Nama
+                        </th>
+                        <th>
+                            Kategori
+                        </th>
+                        <th>
+                           Harga
+                        </th>
+                        <th>
+                           Pengiriman
+                        </th>
+                        <th>
+                           Aktif
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in ListLayanan">
+                        <td>
+                            {{item.Nama}}
+                        </td>
+                        <td>
+                            {{item.Kategori}}
+                        </td>
+                        <td>
+                           {{item.Harga}}
+                        </td>
+                        <td>
+                           {{item.HargaPengiriman}}
+                        </td>
+                        <td>
+                           <input type="checkbox" ng-model="item.Aktif" ng-change="ChangeLayananActived(item)"/>
+                        </td>
+                    </tr>
+                 
+                </tbody>
+            </table>
+
+
+
+        </div>
+
+
+
+
+        <div class="modal fade" id="modal-container-13567" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            ×
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            Kategori Baru
+                        </h4>
+                    </div>
+                    <form role="form" ng-submit="SaveLayanan(layanan)">
+                        <div class="modal-body">
+
+                            <div class="form-group">
+                                <input required ng-model="layanan.Nama" placeholder="Nama Layanan" type="text" class="form-control" id="categoryName" />
+                            </div>
+                            <div class="form-group">
+                                <select name="categoryName" required ng-model="layanan.IdKategori"
+                                        class="form-control" id="categoryName">
+                                    <option value="" disabled selected hidden>Kategori</option>
+                                    <option ng-repeat="option in Categories" value="{{option.Id}}">{{option.Nama}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input required ng-model="layanan.Stok" placeholder="Stok" type="number" class="form-control" id="stok" />
+                            </div>
+                            <div class="form-group">
+                                <input required ng-model="layanan.Unit" placeholder="Unit" type="number" class="form-control" id="unit" />
+                            </div>
+
+                            <div class="form-group">
+                                <input required ng-model="layanan.Harga" placeholder="Harga" type="number" class="form-control" id="harga" />
+                            </div>
+                            <div class="form-group">
+                                <input required ng-model="layanan.HargaPengiriman" placeholder="Biaya Pengantaran" type="number" class="form-control" id="hargaPengiriman" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Gambar</label>
+                                <input required type="file" ng-model="file" class="form-control" id="file" name="file" onchange="ShowImage()" />
+                                <img id="preview" width="300px" height="100px" />
+                            </div>
+
+
+                            <div class="form-group">
+                                <textarea required placeholder="Keterangan" ng-model="layanan.Keterangan" class="form-control" id="description1"></textarea>
+                            </div>
+
+
+
+                        </div>
+                        <div class="modal-footer">
+
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                Keluar
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                Simpan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="modal fade" id="modal-edit" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            ×
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel1">
+                            Edit Kategori
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form">
+                            <div class="form-group">
+                                <label for="categoryName">
+                                    Nama Kategori
+                                </label>
+                                <input ng-model="category.Nama" type="text" class="form-control" id="categoryNameEdit" />
+                            </div>
+                            <div class="form-group">
+                                <label for="description1">
+                                    Keterangan
+                                </label>
+                                <textarea ng-model="category.Keterangan" class="form-control" id="description1Edit"></textarea>
+                            </div>
+
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            Keluar
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="SaveCategory(category)">
+                            Simpan
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+
+
+    </script>
+
+
+    <!--Pengusaha View-->
+    <script type="text/ng-template" id="PesananView.htm">
+        <div class="list-group" ng-init="Init()">
+            <div class="list-group-item active">{{Judul}}</div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel-group" id="panel-515627">
+                            <div class="panel panel-default" ng-repeat="item in Pesanan">
+                                <div class="panel-heading">
+                                    <div class="col-md-12">
+                                        <div class="col-md-3">
+                                            {{item.KodePemesanan}}
+                                        </div>
+                                        <div class="col-md-3">
+                                            {{item.TanggalAcara}}
+                                        </div>
+                                        <div class="col-md-4">
+                                            {{item.StatusPesananText}}
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="panel-title btn" data-toggle="collapse" data-parent="#panel-515627" href="#panel-element-{{item.KodePemesanan}}">Detail</button>
+
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </div>
+                                <div id="panel-element-{{item.KodePemesanan}}" class="panel-collapse collapse">
+                                    <div class="col-md-12">
+                                        <div class="panel">
+                                            <div class="panel-heading"><h3>Detail Pelanggan</h3></div>
+                                            <div class="panel-body">
+                                                <div class="col-md-2">
+                                                    <h5>Nama</h5>
+                                                    <h5>Alamat</h5>
+                                                    <h5>Telepon</h5>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <h5>{{item.Pelanggan.Nama}}</h5>
+                                                    <h5>{{item.Pelanggan.Alamat}}</h5>
+                                                    <h5>{{item.Pelanggan.Telepon}}</h5>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="panel">
+                                            <div class="panel-heading"><h3>Detail Event</h3></div>
+                                            <div class="panel-body">
+                                                <div class="col-md-2">
+                                                    <h5>Pelaksanaan</h5>
+                                                    <h5>Alamat</h5>
+                                                    <h5>Catatan</h5>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <h5>{{item.TanggalAcara}}</h5>
+                                                    <h5>{{item.Pelanggan.Alamat}}</h5>
+                                                    <h5>{{item.Pelanggan.Catatan}}</h5>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="panel">
+                                            <div class="panel-heading"><h3>Pesanan Untuk Anda</h3></div>
+                                            <div class="panel-body">
+                                                <table class="table table-striped table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>
+                                                                Layanan
+                                                            </th>
+                                                            <th>
+                                                                Harga
+                                                            </th>
+                                                            <th>
+                                                                Biaya Pengiriman
+                                                            </th>
+                                                            <th>
+                                                                Terantar
+                                                            </th>
+                                                            <th>
+                                                                Penerima
+                                                            </th>
+                                                            <th>
+                                                                Kembali
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="item in item.Layanans">
+                                                            <td>
+                                                                {{item.Nama}}
+                                                            </td>
+                                                            <td>
+                                                                {{item.Harga}}
+                                                            </td>
+                                                            <td>
+                                                                {{item.HargaPengiriman}}
+                                                            </td>
+                                                            <td>
+                                                                <input type="checkbox" ng-model="detail.Diantar" ng-change="ChangeProgress(detail)" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" ng-model="detail.Penerima" ng-change="ChangeProgress(detail)" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="checkbox" ng-model="detail.Kembali" ng-change="ChangeProgress(detail)" />
+                                                            </td>
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </script>
+
+
+    <!--Pelanggan View-->
+
+    <script type="text/ng-template" id="InboxView.htm">
+        <div class="container-fluid" ng-init="Init()">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h1 class="panel-title">
+                                Inbox
+
+                            </h1>
+
+                        </div>
+                        <div class="panel-body">
+                            <div ng-repeat="item in Inbox">
+                                <div class="col-md-12" ng-show="item.Terbaca">
+                                    <div class="col-md-4">
+                                        {{item.Judul}}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{item.Pengirim}}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{item.Tanggal}}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button id="modal-488721" href="#modal-container-488721" ng-click="ShowMessage(item)" role="button" class="btn" data-toggle="modal">View </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-12" ng-show="!item.Terbaca" style="font-weight:bold">
+                                    <div class="col-md-4">
+                                        {{item.Judul}}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{item.Pengirim}}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{item.Tanggal}}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button id="modal-488721" href="#modal-container-488721" ng-click="ShowMessage(item)" role="button" class="btn" data-toggle="modal">View </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="panel-footer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="modal-container-488721" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                ×
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                From : {{SelectedMessage.Pengirim}}
+
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            {{SelectedMessage.Pesan}}
+                        </div>
+                        <div class="modal-footer">
+
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                Close
+                            </button>
+                            <div class="pull-left"><h5>{{SelectedMessage.Tanggal}}</h5></div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+    </script>
+
+</div>
+
+
+
+<script type="text/javascript">
+    function ShowImage() {
+        var file = document.getElementById("file");
+        var ofReader = new FileReader();
+        ofReader.readAsDataURL(document.getElementById("file").files[0]);
+        ofReader.onload = function (oFREvent) {
+            document.getElementById("preview").src = oFREvent.target.result;
+        };
+    }
+</script>
