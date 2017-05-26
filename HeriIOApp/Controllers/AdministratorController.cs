@@ -15,9 +15,20 @@ namespace HeriIOApp.Controllers
                 return View();
             else
             {
-                return Content("<Script language='javascript' type='text/javascript'> alert('Anda Tidak memiliki Akses'); </script>");
+               return RedirectToAction("AdminLogin");
             }
               
+        }
+
+        public ActionResult Laporan()
+        {
+            return View();
+        }
+
+
+        public ActionResult AdminLogin()
+        {
+            return View();
         }
     }
 }

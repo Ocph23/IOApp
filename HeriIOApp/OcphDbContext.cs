@@ -21,6 +21,7 @@ namespace HeriIOApp
 
         }
         public IRepository<kategori> Categories { get { return new Repository<kategori>(this); } }
+        public IRepository<jenisevent> Events { get { return new Repository<jenisevent>(this); } }
         public IRepository<perusahaan> Companies{ get { return new Repository<perusahaan>(this); } }
         public IRepository<pelanggan> Customers { get { return new Repository<pelanggan>(this); } }
         public IRepository<layanan> Layanan{ get { return new Repository<layanan>(this); } }
@@ -30,6 +31,10 @@ namespace HeriIOApp
         public IRepository<pembayaran> Pembayaran{ get { return new Repository<pembayaran>(this); } }
         public IRepository<pesan> Inbox{ get { return new Repository<pesan>(this); } }
         public IRepository<reportfee> ReportFees { get { return new Repository<reportfee>(this); } }
+        public IRepository<penawaran> Penawarans { get { return new Repository<penawaran>(this); } }
+        public IRepository<ReportFeeEvent> ReportFeeEvents { get { return new Repository<ReportFeeEvent>(this); } }
+
+        public IRepository<profile> Profiles{ get { return new Repository<profile>(this); } }
 
 
         public IDbConnection Connection

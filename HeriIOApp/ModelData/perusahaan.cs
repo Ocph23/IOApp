@@ -102,8 +102,9 @@ using DAL;namespace HeriIOApp.ModelData
             }
         }
 
+        public List<layanan> Layanans { get; set; }
 
-          private int  _id;
+        private int  _id;
            private string  _userid;
            private string  _nama;
            private string  _pemilik;

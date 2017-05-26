@@ -17,13 +17,13 @@
                 </div>
                 <div class="panel-body">
                     <ul class="nav nav-tabs nav-stacked nav-pills">
-                        <li><a href="#Index">Index</a></li>
                         <li><a href="#Categories">Kategori</a></li>
+                        <li><a href="#Events">Jenis Event</a></li>
                         <li><a href="#Pengusaha">Pengusaha</a></li>
                         <li><a href="#Pelanggan">Pelanggan</a></li>
                         <li><a href="#Pesanan">Pesanan</a></li>
                         <li><a href="#Pembayaran">Pembayaran</a></li>
-                        <li><a href="#LaporanPenjualan">Laporan</a></li>
+                        <li><a href="Administrator/Laporan#LaporanPenjualan">Laporan</a></li>
 
                     </ul>
                 </div>
@@ -116,6 +116,141 @@
                             Keluar
                         </button>
                         <button type="button" class="btn btn-primary" ng-click="SaveCategory(category)">
+                            Simpan
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="modal fade" id="modal-edit" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            ×
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel1">
+                            Edit Kategori
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form">
+                            <div class="form-group">
+                                <label for="categoryName">
+                                    Nama Kategori
+                                </label>
+                                <input ng-model="category.Nama" type="text" class="form-control" id="categoryNameEdit" />
+                            </div>
+                            <div class="form-group">
+                                <label for="description1">
+                                    Keterangan
+                                </label>
+                                <textarea ng-model="category.Keterangan" class="form-control" id="description1Edit"></textarea>
+                            </div>
+
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            Keluar
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="SaveCategory(category)">
+                            Simpan
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+
+
+    </script>
+
+    <script type="text/ng-template" id="EventsView.htm">
+        <div class="list-group" ng-init="Init()">
+            <div class="list-group-item active">{{Judul}}</div>
+            <div class="list-group-item panel-transparan">
+                <div class="btn-group">
+
+                    <button class="btn btn-primary" type="button" id="modal-13563" href="#modal-container-13563" role="button" data-toggle="modal">
+                        <em class="glyphicon glyphicon-plus-sign"></em> Tambah
+                    </button>
+
+                </div>
+            </div>
+
+            <div class="list-group-item panel-transparan" ng-repeat="item in Events">
+
+                <h3 class="panel-title pull-left">
+                    {{item.Nama}}
+                </h3>
+                <div class="btn-group pull-right" role="group" aria-label="...">
+                    <button ng-click="ChangeNewToedit(item)" class="btn btn-warning" type="button" id="modal-13563" href="#modal-container-13563" role="button" data-toggle="modal">
+                        <em class="glyphicon glyphicon-edit"></em>
+                    </button>
+                    <button class="btn btn-danger" type="button" ng-click="DeleteItem(item)">
+                        <em class="glyphicon glyphicon-remove-circle"></em>
+                    </button>
+
+
+                </div>
+
+                <div class="clearfix"></div>
+
+
+            </div>
+        </div>
+
+
+
+
+        <div class="modal fade" id="modal-container-13563" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            ×
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel1">
+                            Jenis Event Baru
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form">
+                            <div class="form-group">
+                                <label for="eventName">
+                                    Jenis Event
+                                </label>
+                                <input ng-model="event.Nama" type="text" class="form-control" id="eventName" />
+                            </div>
+                            <div class="form-group">
+                                <label for="description2">
+                                    Keterangan
+                                </label>
+                                <textarea ng-model="event.Keterangan" class="form-control" id="description2"></textarea>
+                            </div>
+
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            Keluar
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="SaveEvent(event)">
                             Simpan
                         </button>
                     </div>
@@ -468,18 +603,21 @@
                             <div class="panel panel-default" ng-repeat="item in Pesanan">
                                 <div class="panel-heading">
                                     <div class="col-md-12">
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             {{item.KodePemesanan}}
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             {{item.TanggalAcara}}
                                         </div>
-                                        <div class="col-md-4">
-                                            {{item.StatusPembayaranText}}
+                                        <div class="col-md-2">
+                                            {{item.StatusPesanan}}
                                         </div>
-                                        <div class="col-md-2 pull-right">
-                                            <button class="panel-title btn" data-toggle="collapse" data-parent="#panel-515627" href="#panel-element-{{item.KodePemesanan}}">Detail</button>
-
+                                        <div class="col-md-2">
+                                            {{item.VerifikasiPembayaran}}
+                                        </div>
+                                        <div class="col-md-3 pull-right">
+                                            <button class="panel-title btn btn-info glyphicon glyphicon-list" data-toggle="collapse" data-parent="#panel-515627" href="#panel-element-{{item.KodePemesanan}}"></button>
+                                            <button class="btn btn-default" data-toggle="modal" data-target="#AddBid"  ng-show="item.IsEvent && item.Penawarans.length==0">Tawarkan</button>
                                         </div>
                                         <div class="clearfix"></div>
                                     </div>
@@ -493,11 +631,13 @@
                                                     <h5>Nama</h5>
                                                     <h5>Alamat</h5>
                                                     <h5>Telepon</h5>
+                                                    <h5>Email</h5>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <h5>{{item.Pelanggan.Nama}}</h5>
-                                                    <h5>{{item.Pelanggan.Alamat}}</h5>
-                                                    <h5>{{item.Pelanggan.Telepon}}</h5>
+                                                    <h5>: {{item.Pelanggan.Nama}}</h5>
+                                                    <h5>: {{item.Pelanggan.Alamat}}</h5>
+                                                    <h5>: {{item.Pelanggan.Telepon}}</h5>
+                                                    <h5>: {{item.Pelanggan.Email}}</h5>
 
                                                 </div>
                                             </div>
@@ -510,20 +650,20 @@
                                             <div class="panel-body">
                                                 <div class="col-md-2">
                                                     <h5>Pelaksanaan</h5>
-                                                    <h5>Alamat</h5>
+                                                    <h5>Alamat Event</h5>
                                                     <h5>Catatan</h5>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <h5>{{item.TanggalAcara}}</h5>
-                                                    <h5>{{item.Pelanggan.Alamat}}</h5>
-                                                    <h5>{{item.Pelanggan.Catatan}}</h5>
+                                                    <h5>: {{item.TanggalAcara}}</h5>
+                                                    <h5>: {{item.Alamat}}</h5>
+                                                    <h5>: {{item.Catatan}}</h5>
 
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-12">
+                                    <div class="col-md-12" ng-show="!item.IsEvent">
                                         <h3>Daftar Pesanan</h3>
                                         <div class="panel-body">
                                             <div class="col-md-3 TableHeader">Perusahan</div>
@@ -533,9 +673,28 @@
                                             <div class="col-md-2">Dikembalikan</div>
                                         </div>
 
-                                        <div class="panel-body" ng-repeat="detail in item.Layanans">
+                                        <div  class="panel-body" ng-repeat="detail in item.Layanans">
                                             <div class="col-md-3">{{detail.Perusahaan.Nama}}</div>
                                             <div class="col-md-3">{{detail.Nama}}</div>
+                                            <div class="col-md-2">{{detail.Diantar}}</div>
+                                            <div class="col-md-2">{{detail.Penerima}}</div>
+                                            <div class="col-md-2">{{detail.Kembali}}</div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-12" ng-show="item.IsEvent">
+                                        <h3>Daftar Penawaran</h3>
+                                        <div class="panel-body">
+                                            <div class="col-md-3 TableHeader">Perusahan</div>
+                                            <div class="col-md-2">Terantar</div>
+                                            <div class="col-md-2">Penerima</div>
+                                            <div class="col-md-2">Dikembalikan</div>
+                                        </div>
+
+                                        <div class="panel-body" ng-repeat="detail in item.Penawarans">
+                                            <div class="col-md-3">{{detail.Perusahaan.Nama}}</div>
                                             <div class="col-md-2">{{detail.Diantar}}</div>
                                             <div class="col-md-2">{{detail.Penerima}}</div>
                                             <div class="col-md-2">{{detail.Kembali}}</div>
@@ -552,9 +711,37 @@
                     </div>
                 </div>
             </div>
+            <div class="modal fade" id="AddBid" tabindex="-1" role="dialog" aria-labelledby="AddBid-label">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="AddBid-label">Penawaran</h4>
+                        </div>
+                        <form role="form" ng-submit="NewOrder(event)">
+                            <div class="modal-body">
 
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label class="control-label">Detail Penawaran</label>
+                                        <textarea type="text" class="form-control" placeholder="Detail Penawaran" ng-model="model.DetailPenawaran"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Biaya</label>
+                                        <input type="number" class="form-control" placeholder="Placecholder" ng-model="model.Biaya">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Keluar</button>
+                                <button type="button" class="btn btn-primary">Ajukan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-
+        
     </script>
     <!--Pembayaran View-->
 
@@ -564,10 +751,13 @@
 
             <div class="list-group-item ">
                 <div class="col-md-12 success">
-                    <div class="col-md-3">Transfer Ke</div>
-                    <div class="col-md-3">Kode Pemesanan</div>
-                    <div class="col-md-4">Nama Pengirim</div>
-                    <div class="col-md-2">Bukti</div>
+                    <div class="col-md-2">Bank</div>
+                    <div class="col-md-1">Kode</div>
+                    <div class="col-md-2">Pengirim</div>
+                    <div class="col-md-2">Jumlah</div>
+                    <div class="col-md-2">Jenis</div>
+                      <div class="col-md-2">Tanggal</div>
+                    <div class="col-md-1">Bukti</div>
 
                 </div>
                 <div class="clearfix">
@@ -577,10 +767,13 @@
 
             <div class="list-group-item panel-transparan" ng-repeat="item in Pembayaran">
                 <div class="col-md-12">
-                    <div class="col-md-3">{{item.Pembayaran.bank}} </div>
-                    <div class="col-md-3">{{item.Pemesanan.KodePemesanan}}</div>
-                    <div class="col-md-4">{{item.Pembayaran.NamaPengirim}}</div>
-                    <div class="col-md-2">
+                    <div class="col-md-2">{{item.Pembayaran.bank}} </div>
+                    <div class="col-md-1">{{item.Pemesanan.KodePemesanan}}</div>
+                    <div class="col-md-2">{{item.Pembayaran.NamaPengirim}}</div>
+                    <div class="col-md-2">{{item.Pembayaran.JumlahBayar|number}}</div>
+                    <div class="col-md-2">{{item.Pembayaran.JenisPembayaran}}</div>
+                    <div class="col-md-2">{{item.Pembayaran.Tanggal}}</div>
+                    <div class="col-md-1">
                         <button class="btn btn-default " href="#modalShowCompany" role="button" data-toggle="modal" ng-click="ShowImage(item)">
                             <em class="glyphicon glyphicon-eye-open"></em>
                         </button>
@@ -612,24 +805,29 @@
                     <div class="modal-footer">
                         <div class="btn-group dropup">
 
-                            <button class="btn btn-default">
-                               {{Selected.DefaultPembayaran}}
+                            <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">
+                               Keluar
                             </button>
                             <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu"  data-dismiss="modal">
                                 <li>
-                                    <a href="" ng-click="ChangeValidate(Selected.Pemesanan,0)" >Tunda</a>
+                                    <a href="" ng-click="ChangeValidate(Selected.Pemesanan,'Tunda')" >Tunda</a>
                                 </li>
                                 <li>
-                                    <a href="" ng-click="ChangeValidate(Selected.Pemesanan,1)">Lunas</a>
+                                    <a href="" ng-click="ChangeValidate(Selected.Pemesanan,'Panjar')">Panjar</a>
+                                </li>
+                                <li>
+                                    <a href="" ng-click="ChangeValidate(Selected.Pemesanan,'Lunas')">Lunas</a>
+                                </li>
+                                <li>
+                                    <a href="" ng-click="ChangeValidate(Selected.Pemesanan,'Batal')">Batal</a>
                                 </li>
                                 <li class="divider">
+                                    <a ></a>
                                 </li>
-                                <li>
-                                    <a href=""  ng-click="ChangeValidate(Selected.Pemesanan,2)">Batal</a>
-                                </li>
+                               
                             </ul>
                         </div>
                     </div>
@@ -643,6 +841,28 @@
     </script>
 
     <script type="text/ng-template" id="LaporanPenjualanView.htm">
+
+        <style>
+            .modal-dialog {
+                width: 100%;
+                height: 100%;
+                margin: 5;
+                padding: 5;
+            }
+
+            .modal-content {
+                height: 100%;
+                border-radius: 0;
+            }
+
+            .modal-body {
+                height: 85%;
+                border-radius: 0;
+                background-color:white;
+                overflow: scroll;
+                padding: 5;
+            }
+        </style>
        <div class="row">
            <center><h3>{{Judul}}</h3></center>
            </br>
@@ -721,7 +941,95 @@
 
                </tfoot>
            </table>
+           <button data-toggle="modal" data-target="#print">Cetak</button>
        </div>
+
+
+        <div class="modal fade" id="print" tabindex="-1" role="dialog" aria-labelledby="print-label">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="row">
+                        <center><h3>{{Judul}}</h3></center>
+                        </br>
+                        <table class="table table-striped" ng-init="Init()">
+                            <thead>
+                                <tr class="success">
+                                    <th>
+                                        Tanggal
+                                    </th>
+                                    <th>
+                                        Kode
+                                    </th>
+                                    <th>Pelanggan</th>
+                                    <th>
+                                        Layanan
+                                    </th>
+                                    <th>Perusahaan</th>
+                                    <th>
+                                        Unit
+                                    </th>
+                                    <th>
+                                        Jumlah
+                                    </th>
+                                    <th>
+                                        Biaya
+                                    </th>
+                                    <th>
+                                        Fee 20%
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in Penjualan">
+                                    <td>
+                                        {{item.Tanggal}}
+                                    </td>
+                                    <td>
+                                        {{item.KodePemesanan}}
+                                    </td>
+                                    <td>
+                                        {{item.Pelanggan}}
+                                    </td>
+                                    <td>
+                                        {{item.NamaLayanan}}
+                                    </td>
+                                    <td>
+                                        {{item.Perusahaan}}
+                                    </td>
+                                    <td>
+                                        {{item.Unit}}
+                                    </td>
+                                    <td>
+                                        {{item.Jumlah}}
+                                    </td>
+                                    <td>
+                                        {{item.biaya|number}}
+                                    </td>
+                                    <td>
+                                        {{item.fee|number}}
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="warning">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Total</td>
+                                    <td>{{TotalBiaya|number}}</td>
+                                    <td>{{TotalFee|number}}</td>
+                                </tr>
+
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </script>
 
 

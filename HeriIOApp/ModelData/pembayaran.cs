@@ -1,9 +1,13 @@
-using System; 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DAL;namespace HeriIOApp.ModelData 
+using DAL;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace HeriIOApp.ModelData 
 { 
      [TableName("pembayaran")] 
      public class pembayaran : BaseNotifyProperty
@@ -67,9 +71,33 @@ using DAL;namespace HeriIOApp.ModelData
                       _namafile=value; 
                      OnPropertyChange("NamaFile");
                      }
-          } 
+          }
 
-          [DbColumn("TipeFile")] 
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        [DbColumn("JenisPembayaran")]
+        public JenisPembayaran JenisPembayaran
+        {
+            get { return _jenispembayaran; }
+            set
+            {
+                _jenispembayaran = value;
+                OnPropertyChange("JenisPesanan");
+            }
+        }
+
+        [DbColumn("JumlahBayar")]
+      
+        public double JumlahBayar
+        {
+            get { return _jumlahBayar; }
+            set { _jumlahBayar = value;
+                OnPropertyChange("JumlahBayar");
+            }
+        }
+
+
+        [DbColumn("TipeFile")] 
           public string TipeFile 
           { 
                get{return _tipefile;} 
@@ -77,9 +105,21 @@ using DAL;namespace HeriIOApp.ModelData
                       _tipefile=value; 
                      OnPropertyChange("TipeFile");
                      }
-          } 
+          }
 
-          [DbColumn("data")] 
+
+        [DbColumn("Tanggal")]
+        public DateTime Tanggal
+        {
+            get { return _tanggal; }
+            set
+            {
+                _tanggal = value;
+                OnPropertyChange("Tanggal");
+            }
+        }
+
+        [DbColumn("data")] 
           public byte[] data 
           { 
                get{return _data;} 
@@ -97,7 +137,10 @@ using DAL;namespace HeriIOApp.ModelData
            private string  _namafile;
            private string  _tipefile;
            private byte[]  _data;
-      }
+        private JenisPembayaran _jenispembayaran;
+        private double _jumlahBayar;
+        private DateTime _tanggal;
+    }
 }
 
 

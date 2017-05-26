@@ -104,19 +104,23 @@ namespace HeriIOApp.ModelData
             set
             {
                 _biaya = value;
+                fee = value * 0.1;
                 OnPropertyChange("biaya");
             }
         }
 
-        [DbColumn("fee")]
+     //   [DbColumn("fee")]
         public double fee
         {
-            get { return _fee; }
+            get {
+                return _fee;
+            }
             set
             {
                 _fee = value;
                 OnPropertyChange("fee");
             }
+           
         }
 
         [DbColumn("NamaLayanan")]
@@ -130,6 +134,29 @@ namespace HeriIOApp.ModelData
             }
         }
 
+       
+       
+        [DbColumn("CancelByUser")]
+        public bool CancelByUser
+        {
+            get { return _cancelByUser; }
+            set { _cancelByUser = value;
+                OnPropertyChange("CancelByUser"); }
+        }
+
+
+        [DbColumn("JenisEvent")]
+        public string JenisEvent
+        {
+            get { return _jenisEvent; }
+            set
+            {
+                _jenisEvent = value;
+                OnPropertyChange("JenisEvent");
+            }
+        }
+
+        private bool _cancelByUser;
         private string _kodepemesanan;
         private string _statuspesanan;
         private DateTime _tanggal;
@@ -141,5 +168,6 @@ namespace HeriIOApp.ModelData
         private double _biaya;
         private double _fee;
         private string _namalayanan;
+        private string _jenisEvent;
     }
 }

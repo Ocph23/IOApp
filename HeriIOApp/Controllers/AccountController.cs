@@ -142,7 +142,7 @@ namespace HeriIOApp.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
-            return View();
+            return View(new RegisterNewViewModel());
         }
 
         //
@@ -150,7 +150,7 @@ namespace HeriIOApp.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterNewViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -158,6 +158,19 @@ namespace HeriIOApp.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    using (var db = new OcphDbContext())
+                    {
+                        if(model.UserType== "Perusahaan")
+                        {
+                            var perusahaan = new ModelData.perusahaan { Terverifikasi=false, Tanggal=DateTime.Now, Alamat = model.Alamat, Email = model.Email, Nama = model.Nama, Pemilik = model.Nama, Telepon = model.Telepon, UserId = user.Id };
+                            db.Companies.InsertAndGetLastID(perusahaan);
+                        }
+                        else if (model.UserType =="Pelanggan")
+                        {
+                            var pelanggan= new ModelData.pelanggan {  Tanggal = DateTime.Now, Alamat = model.Alamat, Email = model.Email, Nama = model.Nama,  Telepon = model.Telepon, UserId = user.Id };
+                            db.Customers.InsertAndGetLastID(pelanggan);
+                        }
+                    }
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771

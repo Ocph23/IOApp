@@ -53,41 +53,40 @@ namespace HeriIOApp.Api
                 try
                 {
 
-                    var de = from a in db.Layanan.Select()
-                             join b in db.PemesananDetail.Select() on a.Id equals b.IdLayanan
-                             join c in db.Pemesanan.Select() on b.IdPemesanan equals c.Id
-                             select c;
-
+                    var de = (from a in db.Pemesanan.Select()
+                              join c in db.Customers.Select() on a.IdPelanggan equals c.Id
+                              select new ModelData.EventView(a) { Pelanggan=c }).ToList();
                     foreach (var item in de)
                     {
-
-                        item.Layanans = (from a in db.PemesananDetail.Where(O => O.IdPemesanan == item.Id)
-                                         join b in db.Layanan.Select() on a.IdLayanan equals b.Id
-                                         join p in db.Companies.Select() on b.IdPerusahaan equals p.Id
-                                         select new ModelData.LayananView
-                                         {
-                                             Id = a.Id,
-                                             LayananId = b.Id,
-                                             Nama = b.Nama,
-                                             Harga = b.Harga,
-                                             HargaPengiriman = b.HargaPengiriman,
-                                             Diantar = a.Diantar,
-                                             Penerima = a.Penerima,
-                                             Kembali = a.Kembali, 
-                                             Perusahaan=p
-                                         }).ToList();
-                        item.Pelanggan = db.Customers.Where(O => O.Id == item.IdPelanggan).FirstOrDefault();
-
+                        if (!item.IsEvent)
+                        {
+                            item.Layanans = (from a in db.PemesananDetail.Where(O => O.IdPemesanan == item.Id)
+                                             join b in db.Layanan.Select() on a.IdLayanan equals b.Id
+                                             join p in db.Companies.Select() on b.IdPerusahaan equals p.Id
+                                             select new ModelData.LayananView
+                                             {
+                                                 Id = a.Id,
+                                                 LayananId = b.Id,
+                                                 Nama = b.Nama,
+                                                 Harga = b.Harga,
+                                                 Diantar = a.Diantar,
+                                                 Penerima = a.Penerima,
+                                                 Kembali = a.Kembali,
+                                                 Perusahaan = p
+                                             }).ToList();
+                            
+                        }else
+                        {
+                            item.Penawarans = db.Penawarans.Where(O => O.IdPemesanan == item.Id && O.Dipilih == true).ToList();
+                            foreach (var per in item.Penawarans)
+                            {
+                                per.Perusahaan = db.Companies.Where(O => O.Id == per.IdPerusahaan).FirstOrDefault();
+                            }
+                        }
 
                     }
 
-                    var result = de.GroupBy(O => O.KodePemesanan).ToList();
-                    List<ModelData.pemesanan> list = new List<ModelData.pemesanan>();
-                    foreach (var item in result)
-                    {
-                        list.Add(item.Select(O => O).FirstOrDefault());
-                    }
-                    return list;
+                    return de.OrderByDescending(O => O.Tanggal).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -103,14 +102,36 @@ namespace HeriIOApp.Api
         {
             using (var db = new OcphDbContext())
             {
-                return db.ReportFees.Where(O=>O.VerifikasiPembayaran== VerifikasiPembayaran.Lunas).ToList().OrderBy(O=>O.KodePemesanan);
+                var result= db.ReportFees.Where(O=>O.VerifikasiPembayaran== VerifikasiPembayaran.Lunas || O.CancelByUser==true).ToList().OrderBy(O=>O.KodePemesanan).ToList();
+                var events = db.ReportFeeEvents.Where(O => O.VerifikasiPembayaran == VerifikasiPembayaran.Lunas || O.CancelByUser == true).ToList().OrderBy(O => O.KodePemesanan);
+                foreach(var item in events)
+                {
+                    result.Add(new ModelData.reportfee
+                    {
+                        biaya = item.biaya,
+                        CancelByUser = item.CancelByUser,
+                        fee = item.fee,
+                        JenisEvent = item.JenisEvent,
+                        Jumlah =1,
+                        KodePemesanan = item.KodePemesanan,
+                        NamaLayanan = "Penawaran",
+                        Pelanggan = item.Pelanggan,
+                        Perusahaan = item.Perusahaan,
+                        StatusPesanan = item.StatusPesanan,
+                        Tanggal = item.Tanggal,
+                        VerifikasiPembayaran = item.VerifikasiPembayaran,
+                        Unit = item.Unit
+                    });
+                }
+                return result;
             }
+            
         }
         public async Task<HttpResponseMessage> ValidatePayment()
         {
             var item = await Request.Content.ReadAsAsync<ModelData.pemesanan>();
 
-            if (item.VerifikasiPembayaran == VerifikasiPembayaran.Lunas && item.StatusPesanan== StatusPesanan.Menunggu)
+            if (item.VerifikasiPembayaran == VerifikasiPembayaran.Lunas|| item.VerifikasiPembayaran == VerifikasiPembayaran.Panjar)
             {
                 using (var db = new OcphDbContext())
                 {
@@ -160,10 +181,7 @@ namespace HeriIOApp.Api
                     }
                 }
             }else
-            {
                 return Request.CreateErrorResponse(HttpStatusCode.NotImplemented, "Anda Tidak Dapat Membatalkan Verivikasi Pembayaran");
-
-            }
         }
 
 

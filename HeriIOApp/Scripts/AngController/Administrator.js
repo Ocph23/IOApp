@@ -2,46 +2,12 @@
 /// Home
 
 var app = angular.module('Administrator', ['ngRoute'])
-    .factory("AdminService", function () {
-        var service = {};
-
-        service.ConvertStatusPesanan=function(value)
-        {
-
-            if (value == 0)
-                return "Baru";
-            else if (value == 1)
-                return "Menunggu";
-            else if (value == 2)
-                return "Pelaksanaan";
-            else if (value == 2)
-                return "Selesai";
-            else
-                return "Batal";
-
-        }
-
-        service.ConvertVerifikasiPembayaran = function (value) {
-
-            if (value == 0)
-                return "Tunda";
-            else if (value == 1)
-                return "Lunas";
-            else  (value == 2)
-                return "Batal";
-        }
-
-
-        return service;
-
-
-    })
 
 .config(function ($routeProvider) {
     $routeProvider.
-        when('/Index', {
-            templateUrl: 'MenuView.htm',
-            controller: 'MenuController'
+        when('/', {
+            templateUrl: 'CategoriesView.htm',
+            controller: 'CategoriesController'
         }).
          when('/Pengusaha', {
              templateUrl: 'PengusahaView.htm',
@@ -67,6 +33,10 @@ var app = angular.module('Administrator', ['ngRoute'])
       when('/Categories', {
           templateUrl: 'CategoriesView.htm',
           controller: 'CategoriesController'
+      }).
+        when('/Events', {
+          templateUrl: 'EventsView.htm',
+          controller: 'EventsController'
       });
     
 })
@@ -167,6 +137,93 @@ var app = angular.module('Administrator', ['ngRoute'])
 
     })
 
+      .controller('EventsController', function ($scope, $http) {
+          $scope.Judul = "Daftar Event";
+          $scope.EventIsNew = true;
+          $scope.event = {};
+
+          $scope.Init = function () {
+              $scope.EventIsNew= true;
+              $scope.Events = [];
+              var url = "/api/Events/Get";
+              $http({
+                  method: 'GET',
+                  url: url,
+              }).success(
+                  function (data, status, header, cfg) {
+                      $scope.Events = data;
+                  }
+
+
+              ).error(function (err, status) {
+                  alert(err.Message + ", " + status);
+              });
+          }
+
+          $scope.ChangeNewToedit = function (item) {
+              $scope.event.Id = item.Id;
+              $scope.event.Nama = item.Nama;
+              $scope.event.Keterangan = item.Keterangan;
+              $scope.EventIsNew= false;
+          }
+
+          $scope.SaveEvent = function (value) {
+              if ($scope.EventIsNew) {
+                  value.Id = 0;
+                  value.Objects = [];
+                  var url = "/api/Events/post";
+                  $http({
+                      method: 'Post',
+                      url: url,
+                      data: value
+                  }).success(
+                      function (data, status, header, cfg) {
+                          value.Id = data;
+                          $scope.Events.push(value)
+                          alert("Success Insert Data");
+                      }
+
+                  ).error(function (err, status) {
+                      alert("Cant Not Insert Data");
+                  });
+              } else {
+                  var url = "/api/Events/put";
+                  $http({
+                      method: 'put',
+                      url: url,
+                      data: value
+                  }).success(
+                      function (data, status, header, cfg) {
+                          value.Id = data;
+                          alert("Success Update");
+                      }
+
+                  ).error(function (err, status) {
+                      alert("Cant Not Update Data");
+                  });
+              }
+
+          }
+
+          $scope.DeleteItem = function (value) {
+              var url = "/api/Categories/DeleteCategory";
+              $http({
+                  method: 'post',
+                  url: url,
+                  data: value
+              }).success(
+                  function (data, status, header, cfg) {
+                      var index = $scope.Events.indexOf(value);
+                      $scope.Events.splice(index, 1);
+                      alert("Success Delete Data");
+                  }
+
+              ).error(function (err, status) {
+                  alert("Cant Not Delete Data");
+              });
+          }
+
+      })
 
  .controller('PengusahaController', function ($scope, $http) {
      $scope.Judul = "Daftar Pengusaha";
@@ -246,7 +303,7 @@ var app = angular.module('Administrator', ['ngRoute'])
  })
 
 
- .controller('PesananController', function ($scope, $http,AdminService) {
+ .controller('PesananController', function ($scope, $http) {
      $scope.Judul = "Pesanan";
      $scope.Verifikasi = [{ Id: 0, Nama: "Tunda" }, { Id: 1, Nama: "Lunas" }, { Id: 2, Nama: "Batal" }]
      $scope.Init = function () {
@@ -258,11 +315,6 @@ var app = angular.module('Administrator', ['ngRoute'])
          }).success(
              function (data, status, header, cfg) {
                  $scope.Pesanan = data;
-                 angular.forEach($scope.Pesanan, function (value, key) {
-                     value.StatusPembayaranText = AdminService.ConvertStatusPesanan(value.StatusPesanan);
-
-                 })
-                 
              }
 
 
@@ -274,7 +326,7 @@ var app = angular.module('Administrator', ['ngRoute'])
     
  })
 
- .controller('PembayaranController', function ($scope, $http,AdminService) {
+ .controller('PembayaranController', function ($scope, $http) {
      $scope.Judul = "Pembayaran";
      $scope.Init=function()
      {
@@ -305,7 +357,6 @@ var app = angular.module('Administrator', ['ngRoute'])
              data: item
          }).success(
              function (data, status, header, cfg) {
-                 value.Id = data;
                  alert("Success Insert Data");
              }
 
@@ -319,7 +370,7 @@ var app = angular.module('Administrator', ['ngRoute'])
 
      $scope.ShowImage = function (data) {
          $scope.Selected = data;
-         $scope.Selected.DefaultPembayaran=AdminService.ConvertVerifikasiPembayaran(data.Pemesanan.VerifikasiPembayaran)
+         $scope.Selected.DefaultPembayaran = data.Pemesanan.VerifikasiPembayaran;
          $scope.Selected.ImageData = "data:image/png;base64,"+data.Pembayaran.data;
      }
  })

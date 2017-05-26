@@ -1,0 +1,129 @@
+﻿
+@{
+    ViewBag.Title = "Laporan";
+    Layout = "~/Views/Shared/_Administrator.cshtml";
+}
+
+<script src="~/Scripts/AngController/Administrator.js"></script>
+<div ng-app="Administrator">
+    <div class="row">
+        
+        <div class="col-md-12">
+            <div ng-view></div>
+        </div>
+    </div>
+
+
+
+    <script type="text/ng-template" id="LaporanPenjualanView.htm">
+
+        <style>
+            .modal-dialog {
+                width: 100%;
+                height: 100%;
+                margin: 5;
+                padding: 5;
+            }
+
+            .modal-content {
+                height: 100%;
+                border-radius: 0;
+            }
+
+            .modal-body {
+                height: 85%;
+                border-radius: 0;
+                background-color: white;
+                overflow: scroll;
+                padding: 5;
+            }
+        </style>
+        <div class="row">
+            <center><h3>{{Judul}}</h3></center>
+            </br>
+            <table class="table table-striped" ng-init="Init()">
+                <thead>
+                    <tr class="success">
+                        <th>
+                            Tanggal
+                        </th>
+                        <th>
+                            Kode
+                        </th>
+                        <th>Pelanggan</th>
+                        <th>
+                            Layanan
+                        </th>
+                        <th>Perusahaan</th>
+                        <th>
+                            Event
+                        </th>
+                        <th>
+                            Jumlah
+                        </th>
+                        <th>
+                            Biaya
+                        </th>
+                        <th>
+                            Fee 10%
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in Penjualan">
+                        <td>
+                            {{item.Tanggal}}
+                        </td>
+                        <td>
+                            {{item.KodePemesanan}}
+                        </td>
+                        <td>
+                            {{item.Pelanggan}}
+                        </td>
+                        <td>
+                            {{item.NamaLayanan}}
+                        </td>
+                        <td>
+                            {{item.Perusahaan}}
+                        </td>
+                        <td>
+                            {{item.JenisEvent}}
+                        </td>
+                        <td>
+                            {{item.Jumlah}}
+                        </td>
+                        <td>
+                            {{item.biaya|number}}
+                        </td>
+                        <td>
+                            {{item.fee|number}}
+                        </td>
+
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="warning">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Total</td>
+                        <td>{{TotalBiaya|number}}</td>
+                        <td>{{TotalFee|number}}</td>
+                    </tr>
+
+                </tfoot>
+            </table>
+           <label>Ctrl + P Untuk Mencetak</label>
+        </div>
+
+
+    </script>
+
+
+
+
+
+</div>

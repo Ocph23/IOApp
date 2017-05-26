@@ -81,15 +81,7 @@ using DAL;namespace HeriIOApp.ModelData
             }
         }
 
-        [DbColumn("HargaPengiriman")]
-        public double HargaPengiriman
-        {
-            get { return _hargapengiriman; }
-            set
-            {
-                _hargapengiriman = value;
-            }
-        }
+     
 
         [DbColumn("Keterangan")]
         public string Keterangan
@@ -121,6 +113,8 @@ using DAL;namespace HeriIOApp.ModelData
             set { _photo = value;
             }
         }
+
+        public string KategoriName { get; internal set; }
 
         private int _id;
         private string _nama;

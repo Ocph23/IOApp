@@ -1,8 +1,18 @@
 ﻿/// <reference path="../angular.min.js" />
 /// Home
 
-var app = angular.module('Customer', ['ngRoute'])
-
+var app = angular.module('Customer', ['ngRoute','angular.filter'])
+    .directive('dir', function ($compile, $parse) {
+        return {
+            restrict: 'E',
+            link: function (scope, element, attr) {
+                scope.$watch(attr.content, function () {
+                    element.html($parse(attr.content)(scope));
+                    $compile(element.contents())(scope);
+                }, true);
+            }
+        }
+    })
 .factory("WebSqlDbService", function ($q,$rootScope,$http) {
     var service = {};
 
@@ -112,9 +122,13 @@ var app = angular.module('Customer', ['ngRoute'])
 
    }
 
+
+
+
     return service;
 
 })
+
 
 .config(function ($routeProvider) {
     $routeProvider.
@@ -122,6 +136,17 @@ var app = angular.module('Customer', ['ngRoute'])
             templateUrl: 'MenuView.htm',
             controller: 'MenuController'
         }).
+        
+       
+          when('/Perusahaan/:Id', {
+              templateUrl: 'Perusahaan.htm',
+              controller: 'PerusahaanController'
+          }).
+
+          when('/LayananDetail/:Id', {
+              templateUrl: 'LayananDetail.htm',
+              controller: 'LayananDetailController'
+          }).
      
      when('/Cart', {
          templateUrl: 'CartView.htm',
@@ -139,6 +164,18 @@ var app = angular.module('Customer', ['ngRoute'])
              templateUrl: 'InboxView.htm',
              controller: 'InboxController'
          }).
+          when('/MyEvent', {
+              templateUrl: 'MyEventView.htm',
+              controller: 'AddEventController'
+          }).
+         when('/MyEventDetail', {
+             templateUrl: 'MyEventDetailView.htm',
+             controller: 'AddEventController'
+         }).
+         when('/AddEvent', {
+             templateUrl: 'AddEventView.htm',
+             controller: 'AddEventController'
+         }).
     otherwise({
         redirectTo: '/Index'
     })
@@ -147,9 +184,9 @@ var app = angular.module('Customer', ['ngRoute'])
 
 })
 
- .controller('MenuController', function ($scope, $http, WebSqlDbService) {
+ .controller('MenuController', function ($scope, $http, WebSqlDbService,$route) {
      $scope.Judul = "Menu Utama";
-     $scope.FilterValue = null;
+     $scope.FilterValue =0;
       $scope.Init = function () {
 
           WebSqlDbService.createDbAndTable();
@@ -182,13 +219,29 @@ var app = angular.module('Customer', ['ngRoute'])
      }
       $scope.AddToChart = function (item) {
           var jumlah = 1;
-          if (item.Stok > item.Unit)
+          if (item.Stok > 1)
           {
-              jumlah =parseInt( prompt("Masukkan Jumlah Yang Anda Inginkan :", "0"));
+              jumlah = parseInt(prompt("Masukkan Jumlah Yang Anda Inginkan :", "0"));
+              if(jumlah>item.Stok)
+              {
+                  alert("Permintaan Anda Melebihi Stock, Tersedia " + item.Stok);
+              }else
+              {
+                  item.Jumlah = jumlah;
+                  WebSqlDbService.InsertToChart(item);
+                  WebSqlDbService.ChangeCartCount();
+                  $route.reload();
+                  alert("Permintaan Anda Telah Ditambhakan");
+              }
+          }else
+          {
+              item.Jumlah = jumlah;
+              WebSqlDbService.InsertToChart(item);
+              WebSqlDbService.ChangeCartCount();
+              $route.reload();
           }
-          item.Jumlah = jumlah;
-          WebSqlDbService.InsertToChart(item);
-          WebSqlDbService.ChangeCartCount();
+        
+         
       };
 
      $scope.ShowChart=function()
@@ -220,6 +273,54 @@ var app = angular.module('Customer', ['ngRoute'])
 
  })
 
+ .controller('PerusahaanController', function ($scope, $http, WebSqlDbService, $route, $routeParams,$sce) {
+     $scope.IsShowDescription = false;
+     $scope.Init = function () {
+         $scope.IsShowDescription = false;
+         var url = "/api/Customer/GetCompanyProfile?Id=" + $routeParams.Id;
+         $http({
+             method: 'GET',
+             url: url,
+         }).success(
+             function (data, status, header, cfg) {
+                 $scope.perusahaan = data.data;
+                 $scope.Profile = data.pro;
+                 $scope.Profile.Selogan = $sce.trustAsHtml(data.pro.Selogan);
+                 $scope.Profile.Description = $sce.trustAsHtml(data.pro.Description);
+
+             }
+         ).error(function (err, status) {
+             alert(err.Message + ", " + status);
+         });
+     };
+
+     $scope.ShowDescription = function () {
+         $scope.IsShowDescription = true;
+     };
+ })
+
+ .controller('LayananDetailController', function ($scope, $http, WebSqlDbService, $route, $routeParams,$sce) {
+     var url = "/api/Customer/GetLayananDetail?Id=" + $routeParams.Id;
+     $http({
+         method: 'GET',
+         url: url,
+     }).success(
+         function (data, status, header, cfg) {
+             angular.forEach(data.Layanans, function (value, key) {
+                 value.HtmlText = $sce.trustAsHtml(value.Keterangan);
+             })
+             $scope.perusahaan = data;
+         }
+     ).error(function (err, status) {
+         alert(err.Message + ", " + status);
+     });
+
+     $scope.GetHtmlText=function(value)
+     {
+         return $sce.trustAsHtml(value);
+     }
+
+ })
 
  .controller('CartController', function ($scope, $http, WebSqlDbService,$rootScope) {
      $scope.Judul = "Keranjang Utama";
@@ -272,7 +373,7 @@ var app = angular.module('Customer', ['ngRoute'])
             
              angular.forEach($scope.ListLayanan, function (value, key) {
 
-                 $scope.Total += (value.Biaya + value.HargaPengiriman);
+                 $scope.Total += (value.Biaya);
              })
          }
      }
@@ -319,13 +420,150 @@ var app = angular.module('Customer', ['ngRoute'])
      }
 
  })
+.controller('AddEventController', function ($scope, $http, WebSqlDbService,$location,$rootScope) {
+    $scope.SyaratIsShow = false;
+    $scope.Init = function () {
+        $scope.SyartIsShow = false;
+        var url = "/api/Events/Get";
+        $http({
+            method: 'Get',
+            url: url
+        }).success(
+            function (data, status, header, cfg) {
+                $scope.EventTipes = data;
+            }
 
+        ).error(function (err, status) {
+            alert(err.Message);
+        });
+
+
+        var url = "/api/Customer/GetMyEvents";
+        $http({
+            method: 'Get',
+            url: url
+        }).success(
+            function (data, status, header, cfg) {
+                $scope.Events = data;
+            }
+
+        ).error(function (err, status) {
+            alert(err.Message);
+        });
+    };
+
+    $scope.SyaratIsShowAction = function () {
+        $scope.SyaratIsShow = true;
+    };
+
+    $scope.NewOrder = function (item) {
+
+        item.JenisEventId=$scope.JenisEventSelected.Id;
+    var url = "/api/Customer/InsertEvent";
+            $http({
+                method: 'Post',
+                url: url,
+                data: item
+            }).success(
+                function (data, status, header, cfg) {
+                    alert("Sukses,Periksa Inbox Anda dan  Lakukan Pembayaran untuk Prosses Selanjutnya ");
+                }
+
+            ).error(function (err, status) {
+                alert(err.Message+" Check Internet Connection");
+            });
+    };
+
+    $scope.SimpanPenawaran=function()
+    {
+        var url = "/api/Customer/SimpanPenawaran";
+        $http({
+            method: 'POST',
+            url: url,
+            data:$scope.Penawarans
+        }).success(
+            function (data, status, header, cfg) {
+               
+
+            }
+        ).error(function (err, status) {
+           
+            alert(err.Message + ", " + status);
+        });
+    }
+
+    $scope.InitView=function()
+    {
+        if ($rootScope.Pesanan !== undefined) {
+            var url = "/api/Customer/GetPenawarans?id=" + $rootScope.Pesanan.Id;
+            $http({
+                method: 'GET',
+                url: url,
+            }).success(
+                function (data, status, header, cfg) {
+                    $scope.Penawarans = data;
+
+                }
+            ).error(function (err, status) {
+                $scope.ListLayanan = [];
+                $scope.IsShow = false;
+                alert(err.Message + ", " + status);
+            });
+        }else
+        {
+            $location.path("MyEvent");
+        }
+      
+    }
+
+    $scope.SelectAllAction=function(item)
+    {
+        if($scope.Penawarans!=undefined)
+        {
+            angular.forEach($scope.Penawarans, function (value, key) {
+                value.Dipilih = item;
+            });
+
+        }
+    }
+
+    $scope.LihatPenawaran = function(item)
+    {
+        $rootScope.Pesanan = item;
+        $location.path("MyEventDetail");
+
+      
+    }
+
+    $scope.ShowPenawaran=function(item)
+    {
+        $scope.Penawaran = item;
+    }
+
+    $scope.CancelAction = function(item)
+    {
+        var url = "/api/Customer/CancelAction";
+        $http({
+            method: 'POST',
+            url: url,
+            data:item
+        }).success(
+            function (data, status, header, cfg) {
+                item.StatusPesanan = "Batal";
+                item.VerifikasiPembayaran = "Batal";
+            }
+        ).error(function (err, status) {
+            alert(err.Message);
+        });
+    }
+})
 .controller('PaymentController', function ($scope, $http, WebSqlDbService) {
     $scope.IsLunas = false;
     $scope.IsBatal = false;
     $scope.IsShow = false;
     $scope.IsWaiting = false;
     $scope.ShowForm = false;
+    $scope.IsEvent = false;
     $scope.Pesanan = {};
     $scope.Search=function(code)
     {
@@ -336,23 +574,64 @@ var app = angular.module('Customer', ['ngRoute'])
                 method: 'GET',
                 url: url,
             }).success(
-                function (data, status, header, cfg) {
-                    $scope.ListLayanan = data.Items;
-                    if (data.pesanan.StatusPesanan==0)
-                    {
-                        $scope.Pesanan = data.pesanan;
-                        $scope.ShowForm = true;
-                    } else if (data.pesanan.VerifikasiPembayaran == 1)
-                    {
-                        $scope.IsLunas = true;
-                    } else if (data.pesanan.StatusPesanan == 1 && data.pesanan.VerifikasiPembayaran == 0) {
-                        $scope.IsWaiting = true;
-                    }else
-                    {
-                        $scope.IsBatal = true;
-                    }
 
+                function (data, status, header, cfg) {
+                    $scope.Pesanan = data;
                     $scope.IsShow = true;
+                    if (!data.IsEvent) {
+                        if (data.Layanans.length <= 0) {
+                            alert('Anda Belum Memilih Layanan');
+                        } else {
+                            $scope.ListLayanan = data.Layanans;
+                            if (data.VerifikasiPembayaran === "None") {
+                                $scope.Pesanan = data;
+                                $scope.ShowForm = true;
+                            } else if (data.VerifikasiPembayaran === "Lunas") {
+                                $scope.IsLunas = true;
+                            } else if (data.VerifikasiPembayaran === "Panjar") {
+                                $scope.IsPanjar = true;
+                                $scope.ShowForm = true;
+                            } else if (data.VerifikasiPembayaran === "MenungguVerifikasi") {
+                                $scope.IsWaiting = true;
+                            } else {
+                                $scope.IsBatal = true;
+                            }
+                        };
+
+                        $scope.Total = 0;
+                        angular.forEach($scope.ListLayanan, function (value, key) {
+                            $scope.Total += value.Biaya;
+                        });
+                       
+                    } else if(data.IsEvent)
+                    {
+                        if (data.Penawarans.length <= 0) {
+                            alert('Anda Belum Memilih Penawaran');
+                        } else {
+                            $scope.IsEvent = true;
+                            $scope.ListLayanan = data.Penawarans;
+                          //  $scope.ListLayanan = data.Layanans;
+                            if (data.VerifikasiPembayaran === "None") {
+                                $scope.Pesanan = data;
+                                $scope.ShowForm = true;
+                            } else if (data.VerifikasiPembayaran === "Lunas") {
+                                $scope.IsLunas = true;
+                            } else if (data.VerifikasiPembayaran === "Panjar") {
+                                $scope.IsPanjar = true;
+                                $scope.ShowForm = true;
+                            } else if (data.VerifikasiPembayaran === "MenungguVerifikasi") {
+                                $scope.IsWaiting = true;
+                            } else {
+                                $scope.IsBatal = true;
+                            };
+
+                            $scope.Total = 0;
+                            angular.forEach($scope.ListLayanan, function (value, key) {
+                                $scope.Total += value.Biaya;
+                            });
+                        }
+                    }
+                  
                 }
             ).error(function (err, status) {
                 $scope.ListLayanan = [];
@@ -378,6 +657,8 @@ var app = angular.module('Customer', ['ngRoute'])
         form.append("TipeFile", res.type);
         form.append("Pesan", $scope.model.Pesan);
         form.append("NamaPengirim", $scope.model.NamaPengirim);
+        form.append("JumlahBayar", $scope.model.JumlahBayar);
+
         var settings = {
             "async": true,
             "crossDomain": true,
@@ -390,20 +671,69 @@ var app = angular.module('Customer', ['ngRoute'])
             "contentType": false,
             "mimeType": "multipart/form-data",
             "data": form
+        };
+
+      
+
+        var t=$scope.Total+$scope.Pesanan.KodeValidasi;
+        var minPanjar = (t*50)/100;
+        if($scope.model.JumlahBayar<t && $scope.Pesanan.VerifikasiPembayaran=="None")
+        {
+            form.append("JenisPembayaran", "Panjar");
+            if($scope.model.JumlahBayar<minPanjar)
+            {
+                alert("Nilai Panjar Minimum 50 % dari Total Pembayaran. (Rp.  " + minPanjar + ")");
+            }else
+            {
+                $.ajax(settings).done(function (response, data) {
+                    console.log(response);
+                    if (data === "success") {
+                        alert("Berhasil menambah data");
+                        $scope.ShowForm = false;
+                    } else {
+                        alert("Gagal Menambahkan data");
+                    }
+                });
+            }
+        } else if ($scope.model.JumlahBayar == t && $scope.Pesanan.VerifikasiPembayaran == "None")
+        {
+            form.append("JenisPembayaran", "Pelunasan");
+            $.ajax(settings).done(function (response, data) {
+                console.log(response);
+                if (data === "success") {
+                    alert("Berhasil menambah data");
+                    $scope.ShowForm = false;
+                } else {
+                    alert("Gagal Menambahkan data");
+                }
+            });
+        }else if($scope.Pesanan.VerifikasiPembayaran == "Panjar")
+        {
+            var t = $scope.Total + $scope.Pesanan.KodeValidasi;
+            var sisa =t- $scope.Pesanan.Panjar.JumlahBayar;
+            if(sisa != $scope.model.JumlahBayar)
+            {
+                alert("Sisa Tagihan Anda Seharusnya. (Rp.  " + sisa+ ")");
+            } else
+            {
+                form.append("JenisPembayaran", "Pelunasan");
+                $.ajax(settings).done(function (response, data) {
+                    console.log(response);
+                    if (data === "success") {
+                        alert("Berhasil menambah data");
+                        $scope.ShowForm = false;
+                    } else {
+                        alert("Gagal Menambahkan data");
+                    }
+                });
+            }
+          
         }
 
-        $.ajax(settings).done(function (response, data) {
-            console.log(response);
-            if (data == "success") {
-                alert("Berhasil menambah data");
-            } else {
-                alert("Gagal Menambahkan data");
-            }
-        });
+      
+      
     }
 })
-
-
 .controller('InboxController', function ($scope, $http, WebSqlDbService) {
 
     $scope.MessageISShow = false;

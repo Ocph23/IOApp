@@ -36,20 +36,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">Application name</a>
+                @Html.ActionLink("Event Organizer", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="/">Home</a></li>
-                    <li><a href="/Home/Contact">Contact</a></li>
                 </ul>
-                <form action="/Account/LogOff" class="navbar-right" id="logoutForm" method="post"><input name="__RequestVerificationToken" type="hidden" value="_VaOcp_pESbKYel_sxXkKlZGLZZyHyWLBKnthFaC3Q8s3aMVGClx-eWurwo9bUMBHdnMiviTmp9d4No_h0Xt2llv1ORAIKitqsQxwD8mYACKgU8oLE2z-gm4q8J4Vq8ifjXMAkAclYu5e1nm61yQbw2">    <ul class="nav navbar-nav navbar-right">
-        <li>
-            <a href="/Manage" title="Manage">Hello ocph23@gmail.com!</a>
-        </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-    </ul>
-</form>
+                @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>

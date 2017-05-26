@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using DAL;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace HeriIOApp.Models
@@ -79,6 +81,34 @@ namespace HeriIOApp.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+    }
+
+
+    public class RegisterNewViewModel : RegisterViewModel
+    {
+
+        [Required]
+        [Display(Name = "Nama")]
+        public string Nama { get; set; }
+
+
+        [Required]
+        [Display(Name = "Telepon")]
+        public string Telepon { get; set; }
+
+        [Required]
+        [Display(Name = "Alamat")]
+        public string Alamat { get; set; }
+
+        [Required]
+        [Display(Name = "Sebagai")]
+        public string UserType { get; set; }
+
+    
+    }
+    public enum UserType
+    {
+        Administrator, Company, Customer, Guest
     }
 
     public class ResetPasswordViewModel

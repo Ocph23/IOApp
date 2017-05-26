@@ -1,9 +1,13 @@
-using System; 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DAL;namespace HeriIOApp.ModelData 
+using DAL;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace HeriIOApp.ModelData 
 {
     [TableName("pemesanan")]
     public class pemesanan : BaseNotifyProperty
@@ -28,6 +32,7 @@ using DAL;namespace HeriIOApp.ModelData
                 OnPropertyChange("IdPelanggan");
             }
         }
+        
 
         [DbColumn("KodePemesanan")]
         public string KodePemesanan
@@ -36,6 +41,17 @@ using DAL;namespace HeriIOApp.ModelData
             set {
                 _kodepemesanan = value;
                 OnPropertyChange("KodePemesanan");
+            }
+        }
+
+        [DbColumn("JenisEventId")]
+        public int JenisEventId
+        {
+            get { return _JenisEventId; }
+            set
+            {
+                _JenisEventId= value;
+                OnPropertyChange("JenisEventId");
             }
         }
 
@@ -50,7 +66,7 @@ using DAL;namespace HeriIOApp.ModelData
         }
 
 
-
+        [DbColumn("Alamat")]
         public string Alamat
         {
             get { return _alamat; }
@@ -71,6 +87,7 @@ using DAL;namespace HeriIOApp.ModelData
             }
         }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         [DbColumn("StatusPesanan")]
         public StatusPesanan StatusPesanan
         {
@@ -91,7 +108,7 @@ using DAL;namespace HeriIOApp.ModelData
             }
         }
 
-
+        [JsonConverter(typeof(StringEnumConverter))]
         [DbColumn("VerifikasiPembayaran")]
         public VerifikasiPembayaran VerifikasiPembayaran
         {
@@ -100,6 +117,50 @@ using DAL;namespace HeriIOApp.ModelData
             {
                 _VerifikasiPembayaran = value;
                 OnPropertyChange("VerifikasiPembayaran");
+            }
+        }
+        [DbColumn("IsEvent")]
+        public bool IsEvent
+        {
+            get { return _isEvent; }
+            set{
+                _isEvent = value;
+                OnPropertyChange("IsEvent");
+            }
+        }
+
+        [DbColumn("KodeValidasi")]
+        public int KodeValidasi
+        {
+            get { return _codeValidate; }
+            set
+            {
+                _codeValidate = value;
+                OnPropertyChange("CodeValidate");
+            }
+        }
+
+
+        [DbColumn("JumlahUndangan")]
+        public int JumlahUndangan
+        {
+            get { return _jumlahUndangan; }
+            set
+            {
+                _jumlahUndangan = value;
+                OnPropertyChange("JumlahUndangan");
+            }
+        }
+
+      
+        [DbColumn("CancelByUser")]
+        public bool CancelByUser
+        {
+            get { return _CancelByUser; }
+            set
+            {
+                _CancelByUser = value;
+                OnPropertyChange("CancelByUser");
             }
         }
 
@@ -114,6 +175,7 @@ using DAL;namespace HeriIOApp.ModelData
         {
             get; set;
         }
+        public pembayaran Panjar { get;  set; }
 
         private int  _id;
            private int  _idpelanggan;
@@ -124,6 +186,35 @@ using DAL;namespace HeriIOApp.ModelData
            private DateTime  _tanggal;
         private string _alamat;
         private VerifikasiPembayaran _VerifikasiPembayaran;
+        private bool _isEvent;
+        private int _codeValidate;
+        private int _jumlahUndangan;
+        private int _JenisEventId; private bool _CancelByUser;
+
+        public pemesanan(pemesanan p)
+        {
+            this.Alamat = p.Alamat;
+            this.Catatan = p.Catatan;
+            this.Details = p.Details;
+            this.Id = p.Id;
+            this.IdPelanggan = p.Id;
+            this.IsEvent = p.IsEvent;
+            this.JumlahUndangan = p.JumlahUndangan;
+            this.KodePemesanan = p.KodePemesanan;
+            this.KodeValidasi = p.KodeValidasi;
+            this.Layanans = p.Layanans;
+            this.Pelanggan = p.Pelanggan;
+            this.StatusPesanan = p.StatusPesanan;
+            this.Tanggal = p.Tanggal;
+            this.TanggalAcara = p.TanggalAcara;
+            this.VerifikasiPembayaran = p.VerifikasiPembayaran;
+            
+        }
+
+        public pemesanan()
+        {
+
+        }
     }
 }
 

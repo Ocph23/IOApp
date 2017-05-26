@@ -10,14 +10,24 @@ namespace HeriIOApp
     {
     }
 
+
+    public enum UserType
+    {
+        Administrator,Company,Customer
+    }
     public enum StatusPesanan
     {
-        Baru,Menunggu,Pelaksanaan,Selesai,Batal
+        Baru,Pelaksanaan,Selesai,Batal
     }
 
     public enum VerifikasiPembayaran
     {
-        Tunda,Lunas,Batal
+       None,MenungguVerifikasi,Panjar,Lunas,Batal
+    }
+
+    public enum JenisPembayaran
+    {
+        Panjar, Pelunasan
     }
 
 

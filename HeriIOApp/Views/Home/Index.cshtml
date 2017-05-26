@@ -6,7 +6,7 @@
 
 
     <div class="row">
-        <div class=" col-md-12">
+        <div class="col-md-12">
             <div ng-view></div>
 
         </div>
@@ -14,30 +14,32 @@
 
     <script type="text/ng-template" id="MenuView.htm">
 
-        <div class="well panel-transparan">
+        <div col-xs-12 col-sm-12 col-md-12>
             <div id="bestSellers" class="carousel slide" data-ride="carousel">
                 <ol class="carousel-indicators">
                     <li data-target="#bestSellers" data-slide-to="0" class="active"></li>
                     <li data-target="#bestSellers" data-slide-to="1"></li>
-                    <li data-target="#bestSellers" data-slide-to="2"></li>
+                    <li data-target="#bestSellers" data-slide-to="7"></li>
                     <li data-target="#bestSellers" data-slide-to="3"></li>
+                    <li data-target="#bestSellers" data-slide-to="4"></li>
                 </ol>
-                <div class="carousel-inner">
-                    <div class="item active">
-                        <img width="100%" src="/images/14051574-Wedding-Planning-and-Your-Big-Event-Planner-List-Stock-Photo.jpg" />
+                <div class="carousel-inner" style="height:20%; margin:10px">
+                    <div class="item active  col-xs-12 col-sm-6 col-md-12">
+                        <img src="/images/14051574-Wedding-Planning-and-Your-Big-Event-Planner-List-Stock-Photo.jpg" />
                         <div class="carousel-caption">Product 1</div>
                     </div>
-                    <div class="item">
-                        <img width="100%" src="/images/342a87e9cf2b8023f8c63ad28af6c91b.jpg" />
+                    <div class="item  col-xs-12 col-sm-6 col-md-12">
+                        <img src="/images/342a87e9cf2b8023f8c63ad28af6c91b.jpg" />
                         <div class="carousel-caption">Product 2</div>
                     </div>
 
-                    <div class="item">
-                        <img width="100%" src="/images/bigstock-Background-concept-wordcloud-i-100739318-1.jpg" />
+                    <div class="item  col-xs-12 col-sm-6 col-md-12">
+                        <img src="/images/bigstock-Background-concept-wordcloud-i-100739318-1.jpg" />
                         <div class="carousel-caption">Product 3</div>
                     </div>
-                    <div class="item">
-                        <img width="100%" src="/images/HB-Image.jpg" />
+
+                    <div class="item   col-xs-12 col-sm-6 col-md-12">
+                        <img src="/images/HB-Image.jpg" />
                         <div class="carousel-caption">Product 4</div>
                     </div>
                 </div>
@@ -49,9 +51,12 @@
                 </a>
             </div>
         </div>
+
+        <!-- Item slider end-->
+
         <div class="col-md-12" ng-init="Init()">
             <div class="col-md-2">
-                <div class="panel panel-transparan">
+                <div class="well-sm panel">
                     <div class="panel-heading">
                         <h3 class="panel-title">
                             Kategori
@@ -67,154 +72,267 @@
                 </div>
 
             </div>
-            <div class="col-md-10">
-                <div class="col-md-6" ng-repeat="item in ListLayanan |filter : {IdKategori:FilterValue}">
-                    <div class="thumbnail panel-transparan">
-                        <div class="well-sm panel-transparan">
-                            <img width="100%" height="150px" alt="Photo" src="data:image/png;base64,{{item.Photo}}" />
-                        </div>
-                            <div class="caption">
-                                <h3>
-                                    {{item.Nama}}
-                                </h3>
-                                <p>
-                                    {{item.Keterangan}}
+            <div class="col-md-10" ng-show="FilterValue>0">
+                <div class="col-md-12">
+                    <div class="carousel-inner">
+                        <div class="item active  col-md-3 align-items-start" style="padding: 3px" ng-repeat="item in ListLayanan |filter : {IdKategori:FilterValue}">
+                            <div class="thumbnail" >
+                                <img style="height:200px" src="data:image/png;base64,{{item.Photo}}" alt="Not Found" />
+                                <div>
+                                    <h5>
+                                        <a href="#LayananDetail/{{item.Id}}">{{item.Nama}}</a>
+                                    </h5>
+                                    <h5>
+                                        IDR.{{item.Harga|number}}
+                                        @if (Request.IsAuthenticated && User.IsInRole("Customer"))
+                                        {
+                                            <a ng-click="AddToChart(item)"><i class="glyphicon glyphicon-shopping-cart pull-right"></i></a>
 
-                                </p>
-                                <p>
-                                    @if (Request.IsAuthenticated && User.IsInRole("Customer"))
-                                    {
-                                        <a ng-click="AddToChart(item)" class="btn btn-primary glyphicon glyphicon-shopping-cart pull-right">Keranjang</a>
+                                        }
+                                    </h5>
+                                    <h5>
 
-                                    }
-                                     <button class="btn btn-default" href="#modalShowCompany" role="button" data-toggle="modal" ng-click="ShowCompanyDetail(item.Perusahaan)">{{item.Perusahaan.Nama}}</button>
-                   
-                                </p>
-                            </div>
-
-                            <div class="panel-group" id="panel-1">
-                                <div class="panel panel-default  panel-transparan">
-                                    <div class="panel-body col-sm-12">
-                                        <table class="table">
-
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        Harga
-                                                    </td>
-                                                    <td align="right">
-                                                        Rp.{{item.Harga}}
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        Unit
-                                                    </td>
-                                                    <td>
-                                                        {{item.Unit}}
-                                                    </td>
-
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        Biaya Pengantaran/Pengiriman
-                                                    </td>
-                                                    <td align="right">
-                                                        Rp.{{item.HargaPengiriman}}
-                                                    </td>
-                                                </tr>
-
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                        By. <a href="#Perusahaan/{{item.Perusahaan.Id}}">{{item.Perusahaan.Nama}}</a>
+                                    </h5>
                                 </div>
                             </div>
+                        
 
                         </div>
-                    </div>
-                </div>
 
+                    </div>
+
+                </div>
             </div>
-        <div class="modal fade" id="modalShowCompany" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
+            <div class="col-md-10" ng-show="FilterValue==0">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="carousel slide" id="carousel">
+                                <div class="carousel-inner">
+                                    <div class="item active   col-md-3" style="padding: 3px" ng-repeat="item in ListLayanan|orderBy :'Nama'">
+                                        <div class="thumbnail">
+                                            <img style="height:200px" src="data:image/png;base64,{{item.Photo}}" alt="Not Found" />
+                                            <div>
+                                                <h5>
+                                                    <a href="#LayananDetail/{{item.Id}}">{{item.Nama}}</a>
+                                                </h5>
+                                                <h5>
+                                                    IDR.{{item.Harga|number}}
+                                                    @if (Request.IsAuthenticated && User.IsInRole("Customer"))
+                                                    {
+                                                        <a ng-click="AddToChart(item)"><i class="glyphicon glyphicon-shopping-cart pull-right"></i></a>
 
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                            ×
-                        </button>
-                        <h4 class="modal-title">
-                            Data Pengusaha
-                        </h4>
+                                                    }
+                                                </h5>
+                                                <h5>
+                                                    By. <a href="#Perusahaan/{{item.Perusahaan.Id}}">{{item.Perusahaan.Nama}}</a>
+                                                </h5>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
-                    <div class="modal-body ">
-                        <dl class="dl-horizontal">
-                            <dt>
-                                Nama Perusahaan
-                            </dt>
-
-                            <dd>
-                                {{ItemDetail.Nama}}
-                            </dd>
-
-                            <dt>
-                                Nama Pemilik
-                            </dt>
-
-                            <dd>
-                                {{ItemDetail.Pemilik}}
-                            </dd>
-
-                            <dt>
-                                Telepon
-                            </dt>
-
-                            <dd>
-                                {{ItemDetail.Telepon}}
-                            </dd>
-
-                            <dt>
-                                Email
-                            </dt>
-
-                            <dd>
-                                {{ItemDetail.Email}}
-                            </dd>
-
-                            <dt>
-                                Alamat
-                            </dt>
-
-                            <dd>
-                                {{ItemDetail.Alamat}}
-                            </dd>
-
-                            <dt>
-                                Tanggal Mendaftar
-                            </dt>
-
-                            <dd>
-                                {{ItemDetail.Tanggal}}
-                            </dd>
-
-                        </dl>
+                    <!-- Item slider end-->
 
 
-                    </div>
-                    <div class="modal-footer">
-
-                        <button type="button" class="btn btn-default" data-dismiss="modal">
-                            Keluar
-                        </button>
-                    </div>
                 </div>
-
+                <hr />
             </div>
 
         </div>
+    </script>
 
+
+    <script type="text/ng-template" id="Perusahaan.htm">
+        <div class="container-fluid" ng-init="Init()">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="list-group">
+                                <div class="list-group-item">
+                                    <center>
+                                        <img id="userImg" src="data:image/png;base64,{{Profile.UserPhoto}}" class="img-circle" alt="Cinque Terre" width="75" height="100" />
+                                        <div><a class="btn btn-default" href="" data-ng-click="ShowDescription()">Lihat Profile</a></div>
+                                    </center><hr />
+                                    <h3>Profile</h3>
+                                    <ul>
+                                        <li><i class="fa fa-briefcase fa-2x" aria-hidden="true"></i>&nbsp;Perusahaan<p>{{perusahaan.Nama}}</p></li>
+                                        <li><i class="fa fa-user fa-2x" aria-hidden="true"></i>&nbsp;Owner<p>{{perusahaan.Pemilik}}</p></li>
+                                        <li ng-show="perusahaan.Terverifikasi">Terverifikasi<i style="color:#20aef6" class="pull-right fa fa-toggle-on fa-2x" aria-hidden="true"></i></li>
+                                        <li ng-show="!perusahaan.Terverifikasi">Terverifikasi<i style="color:#808080" class="pull-right fa fa-toggle-off fa-2x" aria-hidden="true"></i></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="list-group-item" href="#">
+                                    <h3>Contact Info</h3>
+                                    <ul>
+
+                                        <li><i class="fa fa-address-card-o fa-2x" aria-hidden="true"></i>&nbsp;Alamat<p>{{perusahaan.Alamat}}</p></li>
+                                        <li><i class="fa fa-envelope-o fa-2x" aria-hidden="true"></i>&nbsp;Email<p>{{perusahaan.Email}}</p></li>
+                                        <li><i class="fa fa-phone fa-2x" aria-hidden="true"></i>&nbsp;Telepon<p>{{perusahaan.Telepon}}</p></li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+
+                            <div style="background-color:#f8f6f6 !important; border:1px" class="row">
+                                <div class="thumbnail">
+                                    <img id="pageImg" style="width:100%; height:200px" src="data:image/png;base64,{{Profile.PageImage}}" alt="Not Found" />
+                                </div>
+                            </div>
+                            <div ng-bind-html="Profile.Selogan"></div>
+                            <div ng-show="IsShowDescription">
+                                <div ng-bind-html="Profile.Description"></div>
+                            </div>
+
+                            <div class="row col-md-12">
+                                <hr />
+
+                                <center><h2>LAYANAN</h2></center>
+
+                                <div class="col-md-4" style="margin:5px 0px 5px 0px" ng-repeat="item in perusahaan.Layanans">
+                                    <div class="thumbnail">
+                                        <div>
+                                            <img style="width:100%; height:200px" src="data:image/png;base64,{{item.Photo}}" alt="Not Found" />
+                                        </div>
+                                        <div class="caption">
+                                            <h4>
+                                                <a href="#LayananDetail/{{item.Id}}">{{item.Nama}}</a>
+                                            </h4>
+                                            <p>
+                                                @if (Request.IsAuthenticated && User.IsInRole("Customer"))
+                                                {
+                                                    <a ng-click="AddToChart(item)" class="btn btn-primary glyphicon glyphicon-shopping-cart pull-right">Keranjang</a>
+
+                                                }
+                                            </p>
+                                        </div>
+
+                                        <div class="panel-group">
+                                            <table class="table">
+
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <i class="fa fa-money" aria-hidden="true"></i> Harga
+                                                        </td>
+                                                        <td align="right">
+                                                            Rp.{{item.Harga|number}}
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>
+                                                            <i class="fa fa-calculator" aria-hidden="true"></i>  Stock
+                                                        </td>
+                                                        <td align="right">
+                                                            {{item.Stok}}
+                                                        </td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </script>
+
+
+    <script type="text/ng-template" id="LayananDetail.htm" ng-init="Init()">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="list-group">
+                                <div class="list-group-item" href="#">
+                                    <h3>Profile</h3>
+                                    <ul>
+                                        <li><i class="fa fa-briefcase fa-2x" aria-hidden="true"></i>&nbsp;Perusahaan<p>{{perusahaan.Nama}}</p></li>
+                                        <li><i class="fa fa-user fa-2x" aria-hidden="true"></i>&nbsp;Owner<p>{{perusahaan.Pemilik}}</p></li>
+                                        <li ng-show="perusahaan.Terverifikasi">Terverifikasi<i style="color:#20aef6" class="pull-right fa fa-toggle-on fa-2x" aria-hidden="true"></i></li>
+                                        <li ng-show="!perusahaan.Terverifikasi">Terverifikasi<i style="color:#808080" class="pull-right fa fa-toggle-off fa-2x" aria-hidden="true"></i></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="list-group-item" href="#">
+                                    <h3>Contact Info</h3>
+                                    <ul>
+
+                                        <li><i class="fa fa-address-card-o fa-2x" aria-hidden="true"></i>&nbsp;Alamat<p>{{perusahaan.Alamat}}</p></li>
+                                        <li><i class="fa fa-envelope-o fa-2x" aria-hidden="true"></i>&nbsp;Email<p>{{perusahaan.Email}}</p></li>
+                                        <li><i class="fa fa-phone fa-2x" aria-hidden="true"></i>&nbsp;Telepon<p>{{perusahaan.Telepon}}</p></li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9" ng-repeat="item in perusahaan.Layanans">
+                            <style>
+                                #myH {
+                                    background-image: url('data:image/png;base64,{{item.Photo}}');
+                                    background-repeat: no-repeat fixed center;
+                                    background-position: center;
+                                    background-size: 100%;
+                                    height: 250px;
+                                    margin: 3px;
+                                }
+                            </style>
+                            <div id="myH" border:1px" class="row jumbotron">
+
+                            </div>
+                            <div class="row col-md-12">
+                                <hr />
+                                <center>
+
+                                    <h2>{{item.Nama}}</h2>
+                                    <a ng-click="AddToChart(item)">
+                                        @if (Request.IsAuthenticated && User.IsInRole("Customer"))
+                                        {
+                                            <i class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i>
+
+                                        }
+                                        <div>
+
+                                            Tambah Ke Keranjang
+                                        </div>
+                                    </a>
+
+                                </center>
+                                <hr />
+                                <dir id="dir" content="item.HtmlText"></dir>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </script>
+
 
     <script type="text/ng-template" id="CartView.htm">
         <div class="col-md-12" ng-init="Init()">
@@ -223,7 +341,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                           
+
                             <th>
                                 Nama
                             </th>
@@ -235,9 +353,6 @@
                             </th>
                             <th>
                                 Biaya
-                            </th>
-                            <th>
-                                Biaya Pengantaran
                             </th>
                             <th>
 
@@ -258,10 +373,7 @@
                             <td>
                                 Rp. {{item.Biaya|number}}
                             </td>
-                           
-                            <td>
-                                Rp. {{item.HargaPengiriman|number}}
-                            </td>
+
                             <td>
                                 <button class="btn btn-danger glyphicon glyphicon-remove" ng-click="RemoveItem(item)"></button>
                             </td>
@@ -286,12 +398,181 @@
 
     </script>
 
+
+    <script type="text/ng-template" id="MyEventView.htm">
+        <div class="col-md-12" ng-init="Init()">
+            <h2 class="row">My Events</h2>
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Kode Pemesanan
+                            </th>
+                            <th>
+                                Jenis Event
+                            </th>
+                            <th>
+                                Status Pesanan
+                            </th>
+                            <th>
+                                Undangan/Peserta
+                            </th>
+                            <th>
+                                Tanggal Event
+                            </th>
+                            <th>
+
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="default" ng-repeat="item in Events">
+                            <td>
+                                {{item.KodePemesanan}}
+                            </td>
+                            <td>
+                                {{item.JenisEvent.Nama}}
+                            </td>
+                            <td>
+                                {{item.StatusPesanan}}
+                            </td>
+                            <td>
+                                {{item.JumlahUndangan}}
+                            </td>
+                            <td>
+                                {{item.TanggalAcara}}
+                            </td>
+                            <td>
+                                <button class="btn btn-info glyphicon glyphicon-list" ng-click="LihatPenawaran(item)"></button>
+                                <button class="btn btn-warning glyphicon glyphicon-remove-circle" ng-disabled="item.StatusPesanan=='Baru' || item.StatusPesanan=='Batal'" ng-click="CancelAction(item)"></button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="modal fade" id="EventView" tabindex="-1" role="dialog" aria-labelledby="EventView-label">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="EventView-label">{{Pesanan.KodePesanan}}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th>
+                                                Jenis Event
+                                            </th>
+                                            <th>
+                                                Status Pesanan
+                                            </th>
+                                            <th>
+                                                Jumlah Undangan/Peserta
+                                            </th>
+                                            <th>
+                                                Tanggal Event
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="default" ng-repeat="item in Pesanan.Penawarans">
+
+                                            <td><input type="checkbox" ng-model="item.Dipilih" /></td>
+                                            <td>
+                                                {{item.Perusahaan.Nama}}
+                                            </td>
+                                            <td>
+                                                {{item.Perusahaan.Alamat}}
+                                            </td>
+                                            <td>
+                                                Rp.  {{item.Biaya|number}}
+                                            </td>
+                                            <td>
+                                                {{item.DetailPenawaran}}
+                                            </td>
+
+
+                                        </tr>
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </script>
+
+
+    <script type="text/ng-template" id="AddEventView.htm">
+        <div class="col-md-12" ng-init="Init()">
+            <h2 class="row">Data Acara</h2>
+            <form role="form" ng-submit="NewOrder(event)">
+
+                <div class="form-group">
+                    <select placeholder="Jenis Event" ng-model="JenisEventSelected" class="form-control"
+                            ng-options="option.Nama for option in EventTipes track by option.Id"></select>
+                </div>
+
+                <div class="form-group">
+                    <input ng-model="event.TanggalAcara" placeholder="Tanggal Acara" onfocus="(this.type='date')" onblur="(this.type='text')" type="text" class="textbox-n form-control" id="dateevent" required />
+                </div>
+                <div class="form-group">
+                    <input type="number" placeholder="Peserta/Undangan" ng-model="event.JumlahUndangan" class="form-control" id="description1" required />
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Alamat Acara" ng-model="event.Alamat" class="form-control" id="description1" required></textarea>
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Detail Event" ng-model="event.Catatan" class="form-control" id="description2" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label><a class="btn" ng-click="SyaratIsShowAction()">Lihat Syarat Dan Ketentuan</a></label></br>
+                    <div ng-show="SyaratIsShow" class="alert alert-success alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>Warning!</strong>
+                        <ol>
+                            <li>Event akan dibatalkan jika Anda belum memilih Penawaran yang ditawarkan dan paling lambat 24 Jam setelah Event ini Anda Buat</li>
+                            <li>Event akan dibatalkan jika Anda belum melakukan pembayaran paling lambat 24 Jam setelah Event ini Anda Buat</li>
+                            <li>Anda Dapat melakukan pembatalan Event 3 hari sebelum pelaksanaan Event dan pembayaran anda akan  kami kembalikan 90 %</li>
+                        </ol>
+
+                    </div>
+                    <input type="checkbox" placeholder="setuju" id="aktif" ng-model="layanan.Aktif" required>
+                    <label>Setuju</label>
+                </div>
+
+                <div class="form-group">
+                    <button class="btn btn-primary" ng-click="">Buat Event</button>
+                </div>
+            </form>
+        </div>
+    </script>
+
+
     <script type="text/ng-template" id="EventView.htm">
         <div class="col-md-12" ng-init="Init()">
             <h2 class="row">Data Acara</h2>
             <form role="form" ng-submit="NewOrder(layanan)">
                 <div class="form-group">
-                    <input ng-model="layanan.TanggalAcara" placeholder="Tanggal Acara" onfocus="(this.type='datetime-local')" onblur="(this.type='text')" type="text" class="textbox-n form-control" id="dateevent" required />
+                    <input ng-model="layanan.TanggalAcara" placeholder="Tanggal Acara" onfocus="(this.type='date')" onblur="(this.type='text')" type="text" class="textbox-n form-control" id="dateevent" required />
                 </div>
 
                 <div class="form-group">
@@ -302,17 +583,103 @@
                 </div>
 
                 <div class="form-group">
-
-                    <div>
-                        Setuju
-                        <input type="checkbox" placeholder="setuju" class="form-control" id="aktif" ng-model="layanan.Aktif" required>
+                    <label><a class="btn" ng-clik="SyaratIsShowAction()">Lihat Syarat Dan Ketentuan</a></label></br>
+                    <div ng-show="SyaratIsShow" class="alert alert-warning alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>Warning!</strong> Better check yourself, you're not looking too good.
                     </div>
+                    <input type="checkbox" placeholder="setuju" id="aktif" ng-model="layanan.Aktif" required>
+                    <label>Setuju</label>
                 </div>
 
                 <div class="form-group">
-                    <button class="btn btn-primary" ng-click="">Pesan Sekarang</button>
+                    <button class="btn btn-primary" ng-click="">Buat Event</button>
                 </div>
             </form>
+        </div>
+    </script>
+
+
+    <script type="text/ng-template" id="MyEventDetailView.htm">
+        <div class="col-md-12" ng-init="InitView()">
+            <h2 class="row">Daftar Penawaran</h2>
+            <div class="row">
+                <button class="btn btn-success pull-right" ng-show="Pesanan.StatusPesanan=='Baru'" ng-click="SimpanPenawaran()">Simpan</button>
+            </div>
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td><input type="checkbox" ng-model="IsSelectAll" ng-change="SelectAllAction(IsSelectAll)" /></td>
+                            <th>Perusahaan</th>
+
+                            <th>
+                                Telepon
+                            </th>
+                            <th>
+                                Terverifikasi
+                            </th>
+                            <th>
+                                Penawaran
+                            </th>
+                            <th>
+                                Tanggal Pengajuan
+                            </th>
+                            <th>Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="default" ng-repeat="item in Penawarans">
+                            <td><input type="checkbox" ng-model="item.Dipilih" /></td>
+                            <td>
+                                {{item.Perusahaan.Nama}}
+                            </td>
+                            <td>
+                                {{item.Perusahaan.Telepon}}
+                            </td>
+                            <td><input type="checkbox" disabled ng-model="item.Perusahaan.Terverifikasi" /></td>
+
+                            <td>
+                                {{item.Biaya}}
+                            </td>
+                            <td>
+                                {{item.Tanggal}}
+                            </td>
+
+                            <td>
+                                <button data-toggle="modal" data-target="#EventView" ng-click="ShowPenawaran(item)" class="btn btn-info glyphicon glyphicon-file"></button>
+                            </td>
+                        </tr>
+
+
+                    </tbody>
+                </table>
+
+                <div class="modal fade" id="EventView" tabindex="-1" role="dialog" aria-labelledby="EventView-label">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="EventView-label">{{Penawaran.Perusahaan.Nama}}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>Detail Penawaran</label>
+                                    <p>{{Penawaran.DetailPenawaran}}</p>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
         </div>
     </script>
 
@@ -337,45 +704,82 @@
             <div class="col-md-12">
                 <table class="table">
                     <thead>
-                        <tr>
-                            <th>
-                                Unit
-                            </th>
+                        <tr ng-show="IsEvent==false">
+
                             <th>
                                 Nama
+                            </th>
+                            <th>
+                                Jumlah
                             </th>
                             <th>
                                 Harga
                             </th>
                             <th>
-                                Biaya Pengantaran
+                                Biaya
                             </th>
                             <th>
 
                             </th>
                         </tr>
+
+                        <tr ng-show="IsEvent">
+                            <th>Perusahaan</th>
+
+                            <th>
+                                Telepon
+                            </th>
+
+                            <th>
+                                Penawaran
+                            </th>
+                            <th>
+                                Tanggal Pengajuan
+                            </th>
+
+                        </tr>
+
                     </thead>
                     <tbody>
-                        <tr class="default" ng-repeat="item in ListLayanan">
-                            <td>
-                                {{item.Unit}}
-                            </td>
+                        <tr ng-show="IsEvent==false" class="default" ng-repeat="item in ListLayanan">
+
                             <td>
                                 {{item.Nama}}
+                            </td>
+                            <td>
+                                {{item.Jumlah}}
                             </td>
                             <td>
                                 Rp. {{item.Harga|number}}
                             </td>
                             <td>
-                                Rp. {{item.HargaPengiriman|number}}
+                                Rp. {{item.Jumlah*item.Harga|number}}
                             </td>
+
                             <td>
                                 <button class="btn btn-danger glyphicon glyphicon-remove" ng-click="RemoveItem(item)"></button>
                             </td>
                         </tr>
+                        <tr ng-show="IsEvent" class="default" ng-repeat="item in ListLayanan">
+                            <td>
+                                {{item.Perusahaan.Nama}}
+                            </td>
+                            <td>
+                                {{item.Perusahaan.Telepon}}
+                            </td>
+
+                            <td>
+                                {{item.Biaya|number}}
+                            </td>
+                            <td>
+                                {{item.Tanggal}}
+                            </td>
+
+
+                        </tr>
                         <tr>
                             <td>
-                                Total :
+                                <label> Total </label>
                             </td>
                             <td>
                                 Rp. {{Total | number}}
@@ -384,16 +788,59 @@
                             <td></td>
                             <td></td>
                         </tr>
+                        <tr>
+                            <td>
+                                <label>Kode Validasi Pembayaran </label>
+                            </td>
+                            <td>
+                                Rp. {{Pesanan.KodeValidasi}}
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Bayar </label>
+                            </td>
+                            <td>
+                                Rp. {{Total +Pesanan.KodeValidasi|number}}
+                            </td>
+
+                        </tr>
 
                     </tbody>
                 </table>
             </div>
         </div>
-        <div class="row" ng-show="ShowForm">
-            <div class="form-group alert alert-warning">
-                <h1>STATUS PEMBAYARAN : BELUM DIBAYAR</h1>
-                <h5>Silahkan Melakukan Pembayaran dan Konfirmasi Pembayaran Anda Pada form di Bawah</h5>
+
+
+        <div class="row" ng-show="IsWaiting">
+            <div class="form-group alert alert-info">
+                <h1>STATUS PEMBAYARAN : MENUNGGU VERIFIKASI</h1>
+                <h5>Terimah Kasih Telah Melakukan Pembayaran Kami Akan Segera Memverikasi Pembayaran Anda </h5>
             </div>
+        </div>
+        <div class="row" ng-show="IsLunas">
+            <div class="form-group alert alert-success">
+                <h1>STATUS PEMBAYARAN : LUNAS</h1>
+                <h5>Terimah Kasih Telah Melakukan Pembayaran </h5>
+            </div>
+        </div>
+        <div class="row" ng-show="IsPanjar">
+            <div class="form-group alert alert-warning">
+                <h1>STATUS PEMBAYARAN : Panjar</h1>
+                <h5>Terimah Kasih Telah Melakukan Pembayaran Secara Panjar. Segera Lakukan pelunasan </h5>
+            </div>
+        </div>
+        <div class="row" ng-show="IsBatal">
+            <div class="form-group alert alert-danger">
+                <h1>STATUS PEMBAYARAN : BATAL</h1>
+                <h5>Pesanan Anda Telah Dibatalkan, Lakukan Pemesanan Kembali</h5>
+            </div>
+        </div>
+
+
+        <div class="row" ng-show="ShowForm">
+
             <form role="form" ng-submit="Upload()">
                 <div class="form-group">
                     <input ng-model="model.Bank" placeholder="Nama Bank" type="text" class="form-control" required />
@@ -401,10 +848,14 @@
                 <div class="form-group">
                     <input ng-model="model.NamaPengirim" placeholder="Nama Pengirim" type="text" class="form-control" required />
                 </div>
-
+                <div class="form-group">
+                    <input type="number" placeholder="Jumlah Bayar" ng-model="model.JumlahBayar" class="form-control" id="jbayar" />
+                </div>
                 <div class="form-group">
                     <textarea placeholder="Pesan" ng-model="model.Pesan" class="form-control" id="description1"></textarea>
                 </div>
+
+
 
                 <div class="form-group">
                     <input type="file" placeholder="Bukti Pembayaran" accept="image/*" class="form-control" id="file" />
@@ -419,24 +870,6 @@
 
             </form>
 
-        </div>
-        <div class="row" ng-show="IsWaiting">
-            <div class="form-group alert alert-info">
-                <h1>STATUS PEMBAYARAN : MENUNGGU VERIFIKASI</h1>
-                <h5>Terimah Kasih Telah Melakukan Pembayaran Kami Akan Segera Memverikasi Pembayaran Anda </h5>
-            </div>
-        </div>
-        <div class="row" ng-show="IsLunas">
-            <div class="form-group alert alert-success">
-                <h1>STATUS PEMBAYARAN : LUNAS</h1>
-                <h5>Terimah Kasih Telah Melakukan Pembayaran </h5>
-            </div>
-        </div>
-        <div class="row" ng-show="IsBatal">
-            <div class="form-group alert alert-danger">
-                <h1>STATUS PEMBAYARAN : BATAL</h1>
-                <h5>Pesanan Anda Telah Dibatalkan, Lakukan Pemesanan Kembali</h5>
-            </div>
         </div>
     </script>
 
