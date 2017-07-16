@@ -6,7 +6,7 @@
 <script src="~/Scripts/AngController/Administrator.js"></script>
 <h2>Administrator</h2>
 
-<div ng-app="Administrator" class="container-fluid">
+<div style="min-height:720px" ng-app="Administrator" class="container-fluid">
     <div class="row">
         <div class="col-md-2">
             <div class="panel panel-default panel-transparan">
@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="col-md-10">
-            <div ng-view></div>
+            <div   ng-view></div>
         </div>
     </div>
 
@@ -606,8 +606,8 @@
                                         <div class="col-md-2">
                                             {{item.KodePemesanan}}
                                         </div>
-                                        <div class="col-md-2">
-                                            {{item.TanggalAcara}}
+                                        <div class="col-md-3">
+                                            {{item.TanggalAcara|date:'dd-MM-yyyy HH:mm:ss'}}
                                         </div>
                                         <div class="col-md-2">
                                             {{item.StatusPesanan}}
@@ -615,7 +615,7 @@
                                         <div class="col-md-2">
                                             {{item.VerifikasiPembayaran}}
                                         </div>
-                                        <div class="col-md-3 pull-right">
+                                        <div class="col-md-2 pull-right">
                                             <button class="panel-title btn btn-info glyphicon glyphicon-list" data-toggle="collapse" data-parent="#panel-515627" href="#panel-element-{{item.KodePemesanan}}"></button>
                                             <button class="btn btn-default" data-toggle="modal" data-target="#AddBid"  ng-show="item.IsEvent && item.Penawarans.length==0">Tawarkan</button>
                                         </div>
@@ -627,7 +627,7 @@
                                         <div class="panel">
                                             <div class="panel-heading"><h3>Detail Pelanggan</h3></div>
                                             <div class="panel-body">
-                                                <div class="col-md-2">
+                                                <div class="col-md-3">
                                                     <h5>Nama</h5>
                                                     <h5>Alamat</h5>
                                                     <h5>Telepon</h5>
@@ -648,13 +648,15 @@
                                         <div class="panel">
                                             <div class="panel-heading"><h3>Detail Event</h3></div>
                                             <div class="panel-body">
-                                                <div class="col-md-2">
-                                                    <h5>Pelaksanaan</h5>
+                                                <div class="col-md-3">
+                                                    <h5>Tanggal Pelaksanaan</h5>
+                                                    <h5>Tanggal Selesai</h5>
                                                     <h5>Alamat Event</h5>
                                                     <h5>Catatan</h5>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <h5>: {{item.TanggalAcara}}</h5>
+                                                    <h5>: {{item.TanggalAcara|date:'dd-MM-yyyy HH:mm:ss'}}</h5>
+                                                    <h5>: {{item.TanggalSelesai|date:'dd-MM-yyyy HH:mm:ss'}}</h5>
                                                     <h5>: {{item.Alamat}}</h5>
                                                     <h5>: {{item.Catatan}}</h5>
 
@@ -665,7 +667,7 @@
 
                                     <div class="col-md-12" ng-show="!item.IsEvent">
                                         <h3>Daftar Pesanan</h3>
-                                        <div class="panel-body">
+                                        <div class="panel-body" style="background-color:bisque" >
                                             <div class="col-md-3 TableHeader">Perusahan</div>
                                             <div class="col-md-3">Nama Layanan</div>
                                             <div class="col-md-2">Terantar</div>
@@ -686,7 +688,7 @@
 
                                     <div class="col-md-12" ng-show="item.IsEvent">
                                         <h3>Daftar Penawaran</h3>
-                                        <div class="panel-body">
+                                        <div class="panel-body"  style="background-color:#a9f6b2">
                                             <div class="col-md-3 TableHeader">Perusahan</div>
                                             <div class="col-md-2">Terantar</div>
                                             <div class="col-md-2">Penerima</div>
@@ -764,15 +766,21 @@
                 </div>
 
             </div>
+            <style>
+                .noverification {
+                    color:cornflowerblue;
+                    font-weight: bold;
+                }
 
+            </style>
             <div class="list-group-item panel-transparan" ng-repeat="item in Pembayaran">
-                <div class="col-md-12">
+                <div class="col-md-12" ng-class="{'noverification': item.Pemesanan.VerifikasiPembayaran=='MenungguVerifikasi' && (item.Pemesanan.StatusPesanan=='Baru' || item.Pembayaran.JenisPembayaran=='Pelunasan')}">
                     <div class="col-md-2">{{item.Pembayaran.bank}} </div>
                     <div class="col-md-1">{{item.Pemesanan.KodePemesanan}}</div>
                     <div class="col-md-2">{{item.Pembayaran.NamaPengirim}}</div>
                     <div class="col-md-2">{{item.Pembayaran.JumlahBayar|number}}</div>
                     <div class="col-md-2">{{item.Pembayaran.JenisPembayaran}}</div>
-                    <div class="col-md-2">{{item.Pembayaran.Tanggal}}</div>
+                    <div class="col-md-2">{{item.Pembayaran.Tanggal|date:'dd-MM-yyyy HH:mm:ss'}}</div>
                     <div class="col-md-1">
                         <button class="btn btn-default " href="#modalShowCompany" role="button" data-toggle="modal" ng-click="ShowImage(item)">
                             <em class="glyphicon glyphicon-eye-open"></em>

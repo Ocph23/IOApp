@@ -78,10 +78,11 @@ var app = angular.module('Administrator', ['ngRoute'])
         }
 
         $scope.SaveCategory = function (value) {
+            var url = "";
             if ($scope.CategoriIsNew) {
                 value.Id = 0;
                 value.Objects = [];
-                var url = "/api/Categories/post";
+                url = "/api/Categories/post";
                 $http({
                     method: 'Post',
                     url: url,
@@ -93,11 +94,11 @@ var app = angular.module('Administrator', ['ngRoute'])
                         alert("Success Insert Data");
                     }
 
-                ).error(function (err, status) {
-                    alert("Cant Not Insert Data");
-                });
+                    ).error(function (err, status) {
+                        alert("Cant Not Insert Data");
+                    });
             } else {
-                var url = "/api/Categories/put";
+                url = "/api/Categories/put";
                 $http({
                     method: 'put',
                     url: url,
@@ -109,12 +110,11 @@ var app = angular.module('Administrator', ['ngRoute'])
                         alert("Success Update");
                     }
 
-                ).error(function (err, status) {
-                    alert("Cant Not Update Data");
-                });
+                    ).error(function (err, status) {
+                        alert("Cant Not Update Data");
+                    });
             }
-
-        }
+        };
 
         $scope.DeleteItem = function(value)
         {
@@ -377,7 +377,7 @@ var app = angular.module('Administrator', ['ngRoute'])
 
 
  .controller('LaporanPenjualanController', function ($scope, $http) {
-     $scope.Judul = "LAPORAN PENJUALAN";
+     $scope.Judul = "LAPORAN PENYEWAAN";
      
      $scope.Init=function()
      {

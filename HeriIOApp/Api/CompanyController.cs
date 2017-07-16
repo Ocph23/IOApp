@@ -31,7 +31,7 @@ namespace HeriIOApp.Api
                         var data = from a in db.Layanan.Where(O => O.IdPerusahaan == perusahaan.Id)
                                    join b in db.Categories.Select() on a.IdKategori equals b.Id
                                    select new {a.Id,a.IdKategori, a.Aktif, a.Harga, a.Nama, a.Keterangan, a.Stok,
-                                       a.Unit, Kategori = b.Nama };
+                                        Kategori = b.Nama };
 
                         return data.OrderByDescending(O=>O.Aktif);
                     }
@@ -104,11 +104,7 @@ namespace HeriIOApp.Api
                                 var stok = await ctnt.ReadAsStringAsync();
                                 layanan.Stok = Convert.ToInt32(stok);
                             }
-                            else if (field == "Unit")
-                            {
-                                var unit = await ctnt.ReadAsStringAsync();
-                                layanan.Unit = Convert.ToInt32(unit);
-                            }
+                           
 
                             else if (field == "Harga")
                             {
@@ -187,12 +183,6 @@ namespace HeriIOApp.Api
                                 var stok = await ctnt.ReadAsStringAsync();
                                 layanan.Stok = Convert.ToInt32(stok);
                             }
-                            else if (field == "Unit")
-                            {
-                                var unit = await ctnt.ReadAsStringAsync();
-                                layanan.Unit = Convert.ToInt32(unit);
-                            }
-
                             else if (field == "Harga")
                             {
                                 var harga = await ctnt.ReadAsStringAsync();
@@ -206,7 +196,7 @@ namespace HeriIOApp.Api
                         }
 
                       
-                        if (db.Layanan.Update(O=> new { O.Nama,O.Stok,O.Unit,O.Harga,O.Keterangan},layanan,O=>O.Id==layanan.Id))
+                        if (db.Layanan.Update(O=> new { O.Nama,O.Stok,O.Harga,O.Keterangan},layanan,O=>O.Id==layanan.Id))
                         {
                             return Request.CreateResponse(HttpStatusCode.Created, "Data Berhasil Disimpan");
 
@@ -330,6 +320,7 @@ namespace HeriIOApp.Api
                     {
                         var pesanan = db.Pemesanan.Where(O => O.Id == pe.IdPemesanan).FirstOrDefault();
                         pe.Pesanan = pesanan;
+                        pe.Pesanan.JenisEvent = db.Events.Where(O => O.Id == pesanan.JenisEventId).FirstOrDefault();
 
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, Penawarans.OrderByDescending(O=>O.Tanggal).ToList());

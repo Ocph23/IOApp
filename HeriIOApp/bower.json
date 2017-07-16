@@ -1,0 +1,6 @@
+{
+  "name": "myproject",
+  "dependencies": {
+    "angular-spinner": "1.0.1"
+  }
+}

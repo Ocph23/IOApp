@@ -13,22 +13,29 @@
 
     <style>
         body {
+              background:linear-gradient(rgb(252, 251, 251),rgb(170, 163, 163));
             background-repeat: no-repeat fixed center;
             background-position: center;
             background-size: 100%;
+        }
+          #footer {
+           
+           background: linear-gradient(310deg, rgba(192,192,192,1) 0%, rgba(128,128,128,1) 100%); 
+            bottom: 0;
+            width:100%;
+            height:200px;
+            padding:20px;
         }
 
         img {
             filter: alpha(opacity=20); /* For IE8 and earlier */
         }
       
-
-
     </style>
 
 </head>
 <body ng-app="Customer">
-    <div style="background-color:#024848" class="navbar navbar-inverse navbar-fixed-top">
+    <div style="background-color:rgba(10, 62, 62, 0.80)" class="navbar navbar-inverse navbar-fixed-top">
         <div >
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -36,14 +43,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="/Home" class="navbar-brand">
+                <a href="/Home/#Index" class="navbar-brand">
                   Event Organizer
                 </a>
             </div>
-            <div  class="navbar-collapse collapse">
+            <div  class="navbar-collapse collapse" >
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="/Home">
+                        <a href="/Home/#Index">
                             <i class="glyphicon glyphicon-home"></i> </a>
                     </li>
 
@@ -112,10 +119,11 @@
 
         @RenderBody()
         <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Event Organizer - Heri</p>
-        </footer>
+      
     </div>
+    <footer id="footer" class="panel-footer">
+        <p>&copy; @DateTime.Now.Year - Event Organizer - Heri</p>
+    </footer>
     <div class="clearfix"></div>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

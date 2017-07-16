@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using HeriIOApp.ModelData;
 
 namespace HeriIOApp
 {
@@ -84,6 +85,55 @@ namespace HeriIOApp
             using (var db = new OcphDbContext())
             {
                 return db.Companies.Where(O => O.UserId == ui).FirstOrDefault().Terverifikasi;
+            }
+        }
+
+        internal static bool IsAvaliable(int idLayanan, DateTime tanggalAcara,int jumlah, ref layanan l)
+        {
+
+            using (var db = new OcphDbContext())
+            {
+                DateTime tgl = tanggalAcara.Add(TimeSpan.FromDays(1));
+                DateTime tgl1 = tanggalAcara.Subtract(TimeSpan.FromDays(1));
+                StatusPesanan status = StatusPesanan.Batal;
+                StatusPesanan status1 = StatusPesanan.Selesai;
+                var data = db.Pemesanan.Where(O => O.TanggalAcara >= tgl1 && O.TanggalAcara <=tgl && O.IsEvent == false && O.StatusPesanan != status && O.StatusPesanan != status1);
+                var result = from a in data
+                             join b in db.PemesananDetail.Select() on a.Id equals b.IdPemesanan
+                             join c in db.Layanan.Where(O => O.Id == idLayanan) on b.IdLayanan equals c.Id
+                             select new {Layanan=c, details=b };
+
+                var r = result.FirstOrDefault();
+              
+
+                if (r != null)
+                {
+                    var readystok = r.Layanan.Stok- result.Sum(O => O.details.Jumlah);
+                    l = r.Layanan;
+                    l.Stok = readystok;
+                    if (readystok - jumlah >= 0)
+                    {
+                       
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    l = db.Layanan.Where(O => O.Id == idLayanan).FirstOrDefault();
+                    if (l.Stok - jumlah >= 0)
+                    {
+
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
             }
         }
     }

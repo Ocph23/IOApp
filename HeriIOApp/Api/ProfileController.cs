@@ -25,7 +25,7 @@ namespace HeriIOApp.Api
                 var p = db.Profiles.Where(O => O.UserId == userid).FirstOrDefault();
                 if(p==null)
                 {
-                    p = new profile { UserId = userid, Selogan="<p>Click Untuk Edit Quote</p>", Description= "<p>Click Untuk Edit Profil Perusahaan</p>" };
+                    p = new profile { UserId = userid, Selogan= "<Blockquote>Click Untuk Edit Quote</Blockquote>", Description= "<p>Click Untuk Edit Profil Perusahaan</p>" };
                     try
                     {
                         if (User.IsInRole("Company"))

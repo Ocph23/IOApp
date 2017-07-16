@@ -10,6 +10,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using HeriIOApp.Models;
 using MySql.AspNet.Identity;
+using System.Net;
 
 namespace HeriIOApp
 {
@@ -18,8 +19,23 @@ namespace HeriIOApp
     {
         public Task SendAsync(IdentityMessage message)
         {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            return configSendGridasync(message);
+        }
+
+        private Task configSendGridasync(IdentityMessage message)
+        {
+            try
+            {
+                Helpers.SendEmail(message.Destination, message.Subject, message.Body);
+                return Task.FromResult(1);
+            }
+            catch (Exception)
+            {
+
+                return Task.FromResult(0);
+            }
+            // Send the email.
+          
         }
     }
 
@@ -99,6 +115,10 @@ namespace HeriIOApp
         {
             return user.GenerateUserIdentityAsync((ApplicationUserManager)UserManager);
         }
+
+
+       
+
 
         public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
         {

@@ -61,15 +61,6 @@ using DAL;namespace HeriIOApp.ModelData
             }
         }
 
-        [DbColumn("Unit")]
-        public double Unit
-        {
-            get { return _unit; }
-            set
-            {
-                _unit = value;
-            }
-        }
 
         [DbColumn("Harga")]
         public double Harga
@@ -121,7 +112,6 @@ using DAL;namespace HeriIOApp.ModelData
         private int _idkategori;
         private int _idperusahaan;
         private int _stok;
-        private double _unit;
         private double _harga;
         private double _hargapengiriman;
         private string _keterangan;

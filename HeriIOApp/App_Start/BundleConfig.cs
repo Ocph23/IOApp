@@ -27,7 +27,7 @@ namespace HeriIOApp
                     "~/Scripts/angular.min.js",
                      "~/Scripts/angular-route.min.js", 
                      "~/Scripts/angular-filter.min.js",
-                    "~/Scripts/tinymce/tinymce.js", "~/Scripts/ui-tinymce.min.js"));
+                    "~/Scripts/tinymce/tinymce.js", "~/Scripts/ui-tinymce.js","~/bower_components/angular-spinner/dist/angular-spinner.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css","~/fonts/font-awesome-4.7.0/css/font-awesome.min.css",

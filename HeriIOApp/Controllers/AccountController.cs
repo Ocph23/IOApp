@@ -32,7 +32,8 @@ namespace HeriIOApp.Controllers
         {
             get
             {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+                var a = HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+                return _signInManager ?? a;
             }
             private set 
             { 
@@ -73,10 +74,25 @@ namespace HeriIOApp.Controllers
                 return View(model);
             }
 
+            // Require the user to have a confirmed email before they can log on.
+            var user = await UserManager.FindByNameAsync(model.Email);
+            if (user != null)
+            {
+                if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+                {
+                    ViewBag.errorMessage = "Validasi Email Anda Sebelum Login, Cek Kembali Email Anda";
+                    return View("Error");
+                }
+            }
+
+
+
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
 
+
+            
         
 
             switch (result)
@@ -171,15 +187,15 @@ namespace HeriIOApp.Controllers
                             db.Customers.InsertAndGetLastID(pelanggan);
                         }
                     }
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                  //  await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                     await UserManager.SendEmailAsync(user.Id, "Confirm account", "Konfirmasi Akun Anda Dengan Dengan Click <a href=\"" + callbackUrl + "\">Disini</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return View("DisplayEmail");
                 }
                 AddErrors(result);
             }

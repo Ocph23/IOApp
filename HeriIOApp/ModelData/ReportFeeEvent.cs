@@ -64,17 +64,7 @@ namespace HeriIOApp.ModelData
             }
         }
 
-        [DbColumn("Unit")]
-        public double Unit
-        {
-            get { return _unit; }
-            set
-            {
-                _unit = value;
-                OnPropertyChange("Unit");
-            }
-        }
-
+       
         [DbColumn("Perusahaan")]
         public string Perusahaan
         {
@@ -162,7 +152,6 @@ namespace HeriIOApp.ModelData
         private DateTime _tanggal;
         private VerifikasiPembayaran _verifikasipembayaran;
         private int _jumlah;
-        private double _unit;
         private string _perusahaan;
         private string _pelanggan;
         private double _biaya;

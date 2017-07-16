@@ -2,9 +2,7 @@
     ViewBag.Title = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="container-fluid">
-
-
+<div class="container-fluid" style="min-height:720px">
     <div class="row">
         <div class="col-md-12">
             <div ng-view></div>
@@ -13,9 +11,8 @@
     </div>
 
     <script type="text/ng-template" id="MenuView.htm">
-
         <div col-xs-12 col-sm-12 col-md-12>
-            <div id="bestSellers" class="carousel slide" data-ride="carousel">
+            <div id="bestSellers" class="carousel slide" data-ride="carousel" style="margin-bottom:10px">
                 <ol class="carousel-indicators">
                     <li data-target="#bestSellers" data-slide-to="0" class="active"></li>
                     <li data-target="#bestSellers" data-slide-to="1"></li>
@@ -23,23 +20,23 @@
                     <li data-target="#bestSellers" data-slide-to="3"></li>
                     <li data-target="#bestSellers" data-slide-to="4"></li>
                 </ol>
-                <div class="carousel-inner" style="height:20%; margin:10px">
+                <div class="carousel-inner" >
                     <div class="item active  col-xs-12 col-sm-6 col-md-12">
-                        <img src="/images/14051574-Wedding-Planning-and-Your-Big-Event-Planner-List-Stock-Photo.jpg" />
+                        <img style="width:100%;height:350px" src="/images/14051574-Wedding-Planning-and-Your-Big-Event-Planner-List-Stock-Photo.jpg" />
                         <div class="carousel-caption">Product 1</div>
                     </div>
                     <div class="item  col-xs-12 col-sm-6 col-md-12">
-                        <img src="/images/342a87e9cf2b8023f8c63ad28af6c91b.jpg" />
+                        <img style="width:100%;height:350px" src="/images/342a87e9cf2b8023f8c63ad28af6c91b.jpg" />
                         <div class="carousel-caption">Product 2</div>
                     </div>
 
                     <div class="item  col-xs-12 col-sm-6 col-md-12">
-                        <img src="/images/bigstock-Background-concept-wordcloud-i-100739318-1.jpg" />
+                        <img style="width:100%;height:350px" src="/images/bigstock-Background-concept-wordcloud-i-100739318-1.jpg" />
                         <div class="carousel-caption">Product 3</div>
                     </div>
 
                     <div class="item   col-xs-12 col-sm-6 col-md-12">
-                        <img src="/images/HB-Image.jpg" />
+                        <img style="width:100%;height:350px" src="/images/HB-Image.jpg" />
                         <div class="carousel-caption">Product 4</div>
                     </div>
                 </div>
@@ -313,11 +310,12 @@
                                         {
                                             <i class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i>
 
-                                        }
+
                                         <div>
 
                                             Tambah Ke Keranjang
                                         </div>
+                                        }
                                     </a>
 
                                 </center>
@@ -401,7 +399,7 @@
 
     <script type="text/ng-template" id="MyEventView.htm">
         <div class="col-md-12" ng-init="Init()">
-            <h2 class="row">My Events</h2>
+            <h2 class="row">Event Saya</h2>
             <div class="col-md-12">
                 <table class="table">
                     <thead>
@@ -419,7 +417,10 @@
                                 Undangan/Peserta
                             </th>
                             <th>
-                                Tanggal Event
+                                Tanggal Pelaksanaan Event
+                            </th>
+                            <th>
+                                Tanggal Selesai Event
                             </th>
                             <th>
 
@@ -441,7 +442,10 @@
                                 {{item.JumlahUndangan}}
                             </td>
                             <td>
-                                {{item.TanggalAcara}}
+                                {{item.TanggalAcara|date:'dd-MM-yyyy HH:mm:ss'}}
+                            </td>
+                            <td>
+                                {{item.TanggalSelesai|date:'dd-MM-yyyy HH:mm:ss'}}
                             </td>
                             <td>
                                 <button class="btn btn-info glyphicon glyphicon-list" ng-click="LihatPenawaran(item)"></button>
@@ -522,6 +526,7 @@
 
     <script type="text/ng-template" id="AddEventView.htm">
         <div class="col-md-12" ng-init="Init()">
+            <span us-spinner spinner-key="spinner-1"></span>
             <h2 class="row">Data Acara</h2>
             <form role="form" ng-submit="NewOrder(event)">
 
@@ -532,6 +537,9 @@
 
                 <div class="form-group">
                     <input ng-model="event.TanggalAcara" placeholder="Tanggal Acara" onfocus="(this.type='date')" onblur="(this.type='text')" type="text" class="textbox-n form-control" id="dateevent" required />
+                </div>
+                <div class="form-group">
+                    <input ng-model="event.TanggalSelesai" placeholder="Tanggal Selesai" onfocus="(this.type='date')" onblur="(this.type='text')" type="text" class="textbox-n form-control" id="dateselesai" required />
                 </div>
                 <div class="form-group">
                     <input type="number" placeholder="Peserta/Undangan" ng-model="event.JumlahUndangan" class="form-control" id="description1" required />
@@ -574,6 +582,7 @@
                 <div class="form-group">
                     <input ng-model="layanan.TanggalAcara" placeholder="Tanggal Acara" onfocus="(this.type='date')" onblur="(this.type='text')" type="text" class="textbox-n form-control" id="dateevent" required />
                 </div>
+              
 
                 <div class="form-group">
                     <textarea placeholder="Alamat Acara" ng-model="layanan.Alamat" class="form-control" id="description1" required></textarea>
@@ -593,7 +602,7 @@
                 </div>
 
                 <div class="form-group">
-                    <button class="btn btn-primary" ng-click="">Buat Event</button>
+                    <button class="btn btn-primary" ng-click="">Simpan Data Acara</button>
                 </div>
             </form>
         </div>
@@ -665,7 +674,7 @@
                             <div class="modal-body">
                                 <div class="form-group">
                                     <label>Detail Penawaran</label>
-                                    <p>{{Penawaran.DetailPenawaran}}</p>
+                                    <div ng-bind-html="Penawaran.DetailPenawaranHtml"></div>
                                 </div>
 
                             </div>

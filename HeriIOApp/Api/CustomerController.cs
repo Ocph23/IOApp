@@ -23,7 +23,7 @@ namespace HeriIOApp.Api
                     var data = from a in db.Layanan.Where(O => O.Aktif == true)
                                join b in db.Categories.Select() on a.IdKategori equals b.Id
                                join c in db.Companies.Where(O => O.Terverifikasi == true) on a.IdPerusahaan equals c.Id
-                               select new { a.Photo, a.Aktif, a.Harga,  a.Id, a.IdKategori, a.IdPerusahaan, a.Nama, a.Keterangan, a.Stok, a.Unit, Kategori = b.Nama, Perusahaan = c };
+                               select new { a.Photo, a.Aktif, a.Harga,  a.Id, a.IdKategori, a.IdPerusahaan, a.Nama, a.Keterangan, a.Stok, Kategori = b.Nama, Perusahaan = c };
 
                     return data;
                 }
@@ -76,7 +76,7 @@ namespace HeriIOApp.Api
             catch (Exception ex)
             {
 
-                throw new Exception(ex.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.OK,ex.Message);
             }
 
         }
@@ -106,7 +106,7 @@ namespace HeriIOApp.Api
                                            join b in db.Layanan.Select() on a.IdLayanan equals b.Id
                                            select new ModelData.LayananView { Aktif=b.Aktif, Diantar=a.Diantar, Harga=b.Harga, 
                                             Id=b.Id, IdKategori=b.Id, IdPerusahaan=b.IdPerusahaan, Jumlah=a.Jumlah, Kembali=a.Kembali, Keterangan=b.Keterangan, LayananId=b.Id,
-                                            Nama=b.Nama, Penerima=a.Penerima, Stok=b.Stok, Unit=b.Unit}).ToList();
+                                            Nama=b.Nama, Penerima=a.Penerima, Stok=b.Stok}).ToList();
 
                         if (pesanan.Layanans.Count > 0)
                         {
@@ -252,7 +252,6 @@ namespace HeriIOApp.Api
                         {
                             Harga = l.Harga,
                             Nama = l.Nama,
-                            Unit = l.Unit,
                             Id = l.Id,
                             IdKategori = l.IdKategori,
                             Jumlah = item.Jumlah,
@@ -312,7 +311,14 @@ namespace HeriIOApp.Api
                         foreach (var detail in item.Details)
                         {
                             detail.IdPemesanan = id;
-                            detail.Id = db.PemesananDetail.InsertAndGetLastID(detail);
+                            layanan l = new layanan();
+                            if (Helpers.IsAvaliable(detail.IdLayanan, item.TanggalAcara, detail.Jumlah, ref l))
+                            {
+                                detail.Id = db.PemesananDetail.InsertAndGetLastID(detail);
+                            }
+                            else
+                                throw new SystemException("Maaf,  Stok Layanan "+l.Nama+" untuk Tgl "+ item.TanggalAcara.ToShortDateString()+"  sisa "+l.Stok);
+                           
                         }
                         Helpers.SendEmail(customer.Email, "Pemesanan", message);
                         tr.Commit();
@@ -328,7 +334,7 @@ namespace HeriIOApp.Api
                 {
 
                     tr.Rollback();
-                    return Request.CreateErrorResponse(HttpStatusCode.NotImplemented, ex);
+                    return Request.CreateErrorResponse(HttpStatusCode.NotImplemented, ex.Message);
                 }
 
             }

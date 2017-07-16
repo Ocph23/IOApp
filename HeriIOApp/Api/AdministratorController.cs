@@ -41,7 +41,9 @@ namespace HeriIOApp.Api
                 var result = from a in db.Pembayaran.Select()
                              join b in db.Pemesanan.Select() on a.IdPemesanan equals b.Id
                              select new { Pembayaran=a, Pemesanan=b };
-                return result;
+
+
+                return result.OrderByDescending(O => O.Pembayaran.Id);
             }
         }
 
@@ -120,7 +122,6 @@ namespace HeriIOApp.Api
                         StatusPesanan = item.StatusPesanan,
                         Tanggal = item.Tanggal,
                         VerifikasiPembayaran = item.VerifikasiPembayaran,
-                        Unit = item.Unit
                     });
                 }
                 return result;

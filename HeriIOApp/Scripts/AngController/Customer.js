@@ -1,7 +1,7 @@
 ﻿/// <reference path="../angular.min.js" />
 /// Home
 
-var app = angular.module('Customer', ['ngRoute','angular.filter'])
+var app = angular.module('Customer', ['ngRoute','angular.filter','angularSpinner'])
     .directive('dir', function ($compile, $parse) {
         return {
             restrict: 'E',
@@ -12,7 +12,7 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
                 }, true);
             }
         }
-    })
+    })  
 .factory("WebSqlDbService", function ($q,$rootScope,$http) {
     var service = {};
 
@@ -34,7 +34,7 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
     service.createDbAndTable = function () {
         var db = openDatabase("IODb", "1.0", 'Mobile Client DB', 2 * 1024 * 1024);
         db.transaction(function (tx) {
-            tx.executeSql("Create table if not exists Chart(UserId varchar(50),Id integer (20),Jumlah integer(20))");
+            tx.executeSql("Create table if not exists Chart(UserId varchar(50),Id integer (20) UNIQUE,Jumlah integer(20))");
         });
         this.ChangeCartCount();
 
@@ -84,14 +84,8 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
                 } else {
                     deferred.reject("Keranjang Pesanan Kosong");
                 }
-
-            })
-           
-
-            ;
-        })
-       
-
+            });
+        });
         return deferred.promise;
       
     };
@@ -100,9 +94,8 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
        var db = openDatabase("IODb", "1.0", 'Mobile Client DB', 2 * 1024 * 1024);
        db.transaction(function (tx) {
            tx.executeSql("Delete From Chart", [], function (tx, result) {
-           })
-           ;
-       })
+           });
+       });
        this.ChangeCartCount();
    };
 
@@ -116,19 +109,13 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
            function (data, status, header, cfg) {
                message.Terbaca = true;
            }
-       ).error(function (err, status) {
-           $rootScope.InboxCount = 0;
-       });
+           ).error(function (err, status) {
+               $rootScope.InboxCount = 0;
+           });
 
-   }
-
-
-
-
+   };
     return service;
-
 })
-
 
 .config(function ($routeProvider) {
     $routeProvider.
@@ -187,10 +174,10 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
  .controller('MenuController', function ($scope, $http, WebSqlDbService,$route) {
      $scope.Judul = "Menu Utama";
      $scope.FilterValue =0;
-      $scope.Init = function () {
-
-          WebSqlDbService.createDbAndTable();
-         var url = "/api/Customer/GetLayanan";
+     $scope.Init = function () {
+         var url = "";
+         WebSqlDbService.createDbAndTable();
+         url = "/api/Customer/GetLayanan";
          $http({
              method: 'GET',
              url: url,
@@ -198,34 +185,34 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
              function (data, status, header, cfg) {
                  $scope.ListLayanan = data;
              }
-         ).error(function (err, status) {
-             alert(err.Message + ", " + status);
-         });
+             ).error(function (err, status) {
+                 alert(err.Message + ", " + status);
+             });
 
 
-         var url = "/api/Categories/Get";
+         url = "/api/Categories/Get";
          $http({
              method: 'GET',
-             url: url,
+             url: url
          }).success(
              function (data, status, header, cfg) {
                  $scope.Categories = data;
              }
-         ).error(function (err, status) {
-             alert(err.Message + ", " + status);
-         });
+             ).error(function (err, status) {
+                 alert(err.Message + ", " + status);
+             });
+     };
 
-         
-     }
       $scope.AddToChart = function (item) {
+
           var jumlah = 1;
           if (item.Stok > 1)
           {
               jumlah = parseInt(prompt("Masukkan Jumlah Yang Anda Inginkan :", "0"));
-              if(jumlah>item.Stok)
+              if (!isNaN( jumlah) &&jumlah > item.Stok)
               {
                   alert("Permintaan Anda Melebihi Stock, Tersedia " + item.Stok);
-              }else
+              } else if (!isNaN(jumlah))
               {
                   item.Jumlah = jumlah;
                   WebSqlDbService.InsertToChart(item);
@@ -233,6 +220,7 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
                   $route.reload();
                   alert("Permintaan Anda Telah Ditambhakan");
               }
+
           }else
           {
               item.Jumlah = jumlah;
@@ -244,32 +232,29 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
          
       };
 
-     $scope.ShowChart=function()
-     {
-         var value = WebSqlDbService.GetChart();
-         var url = "/api/Customer/GetChartView";
-         $http({
-             method: 'Post',
-             url: url,
-             data: value
-         }).success(
-             function (data, status, header, cfg) {
-                 alert("Success Insert Data");
-             }
+      $scope.ShowChart = function () {
+          var value = WebSqlDbService.GetChart();
+          var url = "/api/Customer/GetChartView";
+          $http({
+              method: 'Post',
+              url: url,
+              data: value
+          }).success(
+              function (data, status, header, cfg) {
+                  alert("Success Insert Data");
+              }
 
-         ).error(function (err, status) {
-             alert("Cant Not Insert Data");
-         });
-     }
-     $scope.FilterLayanan=function(item)
-     {
-         $scope.FilterValue = item.Id;
-     }
+              ).error(function (err, status) {
+                  alert("Cant Not Insert Data");
+              });
+      };
+      $scope.FilterLayanan = function (item) {
+          $scope.FilterValue = item.Id;
+      };
 
-     $scope.ShowCompanyDetail=function(item)
-     {
-         $scope.ItemDetail = item;
-     }
+      $scope.ShowCompanyDetail = function (item) {
+          $scope.ItemDetail = item;
+      };
 
  })
 
@@ -378,14 +363,16 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
          }
      }
 
- })
- .controller('EventController', function ($scope, $http, WebSqlDbService) {
+    })
+
+ .controller('EventController', function ($scope, $http, WebSqlDbService, usSpinnerService) {
      $scope.Init=function()
      {
 
      }
 
      $scope.NewOrder = function (item) {
+       
          WebSqlDbService.GetChart().then(function (data) {
 
             item.Details = [];
@@ -409,18 +396,28 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
                    
                      alert("Sukses,Periksa Inbox Anda dan  Lakukan Pembayaran untuk Prosses Selanjutnya ");
                      WebSqlDbService.ClearCart();
+                 
+
                  }
 
              ).error(function (err, status) {
-                 alert("Cant Not Insert Data");
+                 alert(err.Message);
              });
          }, function (msg) {
              alert(msg);
          });
+      
      }
 
- })
-.controller('AddEventController', function ($scope, $http, WebSqlDbService,$location,$rootScope) {
+    })
+
+.controller('AddEventController', function ($scope, $http, WebSqlDbService, $location, $rootScope, usSpinnerService,$sce) {
+    $scope.startSpin = function () {
+        usSpinnerService.spin('spinner-1');
+    }
+    $scope.stopSpin = function () {
+        usSpinnerService.stop('spinner-1');
+    }
     $scope.SyaratIsShow = false;
     $scope.Init = function () {
         $scope.SyartIsShow = false;
@@ -438,7 +435,7 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
         });
 
 
-        var url = "/api/Customer/GetMyEvents";
+        url = "/api/Customer/GetMyEvents";
         $http({
             method: 'Get',
             url: url
@@ -457,21 +454,36 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
     };
 
     $scope.NewOrder = function (item) {
+        $scope.startSpin();
+        try {
+            item.JenisEventId = $scope.JenisEventSelected.Id;
+            if (item.TanggalAcara <= new Date() ||
+                item.TanggalAcara >= item.TanggalSelesai ||
+                item.JenisEventId <= 1) {
+                $scope.stopSpin();
+                alert("Periksa Kembali Data Anda");
+            } else {
+                var url = "/api/Customer/InsertEvent";
+                $http({
+                    method: 'Post',
+                    url: url,
+                    data: item
+                }).success(
+                    function (data, status, header, cfg) {
+                        $scope.stopSpin();
+                        alert("Sukses,Periksa Inbox Anda dan  Lakukan Pembayaran untuk Prosses Selanjutnya ");
+                    }
 
-        item.JenisEventId=$scope.JenisEventSelected.Id;
-    var url = "/api/Customer/InsertEvent";
-            $http({
-                method: 'Post',
-                url: url,
-                data: item
-            }).success(
-                function (data, status, header, cfg) {
-                    alert("Sukses,Periksa Inbox Anda dan  Lakukan Pembayaran untuk Prosses Selanjutnya ");
-                }
-
-            ).error(function (err, status) {
-                alert(err.Message+" Check Internet Connection");
-            });
+                    ).error(function (err, status) {
+                        $scope.stopSpin();
+                        alert(err.Message + " Check Internet Connection");
+                    });
+            }
+        } catch (e) {
+            alert("Periksa Kembali Data Anda");
+            $scope.stopSpin();
+        }
+       
     };
 
     $scope.SimpanPenawaran=function()
@@ -531,13 +543,13 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
     {
         $rootScope.Pesanan = item;
         $location.path("MyEventDetail");
-
-      
     }
 
     $scope.ShowPenawaran=function(item)
     {
+        $scope.Penawaran = {};
         $scope.Penawaran = item;
+        $scope.Penawaran.DetailPenawaranHtml = $sce.trustAsHtml(item.DetailPenawaran)
     }
 
     $scope.CancelAction = function(item)
@@ -556,7 +568,8 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
             alert(err.Message);
         });
     }
-})
+    })
+
 .controller('PaymentController', function ($scope, $http, WebSqlDbService) {
     $scope.IsLunas = false;
     $scope.IsBatal = false;
@@ -709,7 +722,7 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
             });
         }else if($scope.Pesanan.VerifikasiPembayaran == "Panjar")
         {
-            var t = $scope.Total + $scope.Pesanan.KodeValidasi;
+            t = $scope.Total + $scope.Pesanan.KodeValidasi;
             var sisa =t- $scope.Pesanan.Panjar.JumlahBayar;
             if(sisa != $scope.model.JumlahBayar)
             {
@@ -733,7 +746,8 @@ var app = angular.module('Customer', ['ngRoute','angular.filter'])
       
       
     }
-})
+    })
+
 .controller('InboxController', function ($scope, $http, WebSqlDbService) {
 
     $scope.MessageISShow = false;

@@ -210,7 +210,7 @@
                                     {{item.Pesanan.KodePemesanan}}
                                 </td>
                                 <td>
-                                    {{item.Pesanan.JenisPesanan}}
+                                    {{item.Pesanan.JenisEvent.Nama}}
                                 </td>
                                 <td>
                                     {{item.Pesanan.JumlahUndangan}}
@@ -246,7 +246,7 @@
                         <h4 class="modal-title" id="myModalDetail-label">Detail Penawaran</h4>
                     </div>
                     <div class="modal-body">
-                        {{Selecteditem.DetailPenawaran}}
+                       <div ng-bind-html="Selecteditem.DetailPenawaranHtml"></div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -312,12 +312,20 @@
                                 {{Pesanan.Pemesanan.JumlahUndangan}}
                             </div>
                             <div class="form-group">
-                                <label class="control-label">Tanggal Event</label>
-                                {{Pesanan.Pemesanan.TanggalAcara}}
+                                <label class="control-label">Tanggal Mulai Event</label>
+                                {{Pesanan.Pemesanan.TanggalAcara |date:'dd-MM-yyyy HH:mm:ss'}}
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Tanggal Selesai Event</label>
+                                {{Pesanan.Pemesanan.TanggalSelesai |date:'dd-MM-yyyy HH:mm:ss'}}
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Catatan</label>
                                 {{Pesanan.Pemesanan.Catatan}}
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Tanggal Pengajuan</label>
+                                {{Pesanan.Pemesanan.Tanggal |date:'dd-MM-yyyy HH:mm:ss'}}
                             </div>
                         </div>
                         <div class="panel-footer">
@@ -337,7 +345,7 @@
                         <div class="panel-body">
                             <div class="form-group">
                                 <label class="control-label">Detail Penawaran</label>
-                                <textarea type="text" class="form-control" placeholder="Detail Penawaran" ng-model="model.DetailPenawaran"></textarea>
+                                <textarea ui-tinymce="tinymceOptions" type="text" class="form-control" placeholder="Detail Penawaran" ng-model="model.DetailPenawaran"></textarea>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Biaya</label>
@@ -458,11 +466,7 @@
                                 <label>Stock</label>
                                {{layanan.Stok}}
                             </div>
-                            <div class="form-group">
-                                <label>Unit</label>
-                                {{layanan.Unit}}
-                            </div>
-
+                         
                             <div class="form-group">
                                 <label>Harga</label>
                                    IDR. {{layanan.Harga|number}}
@@ -519,11 +523,7 @@
                                 <label>Stock</label>
                                 <input required ng-model="layanan.Stok" placeholder="Stok" type="number" class="form-control" id="stok" />
                             </div>
-                            <div class="form-group" >
-                                <label>Unit</label>
-                                <input required ng-model="layanan.Unit" placeholder="Unit" type="number" class="form-control" id="unit" />
-                            </div>
-
+                         
                             <div class="form-group">
                                 <label>Harga</label>
                                 <input required ng-model="layanan.Harga" placeholder="Harga" type="number" class="form-control" id="harga" />
@@ -629,7 +629,7 @@
                                             {{item.KodePemesanan}}
                                         </div>
                                         <div class="col-md-3">
-                                            {{item.TanggalAcara}}
+                                            {{item.TanggalAcara|date:'dd-MM-yyyy HH:mm:ss'}}
                                         </div>
                                         <div class="col-md-4">
                                             {{item.StatusPesananText}}
@@ -671,7 +671,7 @@
                                                     <h5>Catatan</h5>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <h5>{{item.TanggalAcara}}</h5>
+                                                    <h5>{{item.TanggalAcara|date:'dd-MM-yyyy HH:mm:ss'}}</h5>
                                                     <h5>{{item.Pelanggan.Alamat}}</h5>
                                                     <h5>{{item.Pelanggan.Catatan}}</h5>
 
@@ -772,7 +772,7 @@
                                         {{item.Pengirim}}
                                     </div>
                                     <div class="col-md-3">
-                                        {{item.Tanggal}}
+                                        {{item.Tanggal|date:'dd-MM-yyyy HH:mm:ss'}}
                                     </div>
                                     <div class="col-md-2">
                                         <button id="modal-488721" href="#modal-container-488721" ng-click="ShowMessage(item)" role="button" class="btn" data-toggle="modal">View </button>
@@ -786,7 +786,7 @@
                                         {{item.Pengirim}}
                                     </div>
                                     <div class="col-md-3">
-                                        {{item.Tanggal}}
+                                        {{item.Tanggal|date:'dd-MM-yyyy HH:mm:ss'}}
                                     </div>
                                     <div class="col-md-2">
                                         <button id="modal-488721" href="#modal-container-488721" ng-click="ShowMessage(item)" role="button" class="btn" data-toggle="modal">View </button>
@@ -821,7 +821,7 @@
                             <button type="button" class="btn btn-default" data-dismiss="modal">
                                 Close
                             </button>
-                            <div class="pull-left"><h5>{{SelectedMessage.Tanggal}}</h5></div>
+                            <div class="pull-left"><h5>{{SelectedMessage.Tanggal|date:'dd-MM-yyyy HH:mm:ss'}}</h5></div>
 
                         </div>
                     </div>

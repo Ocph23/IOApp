@@ -64,6 +64,16 @@ namespace HeriIOApp.ModelData
                 OnPropertyChange("TanggalAcara");
             }
         }
+        [DbColumn("TanggalSelesai")]
+        public DateTime? TanggalSelesai
+        {
+            get { return _tanggalselesai; }
+            set
+            {
+                _tanggalselesai = value;
+                OnPropertyChange("TanggalSelesai");
+            }
+        }
 
 
         [DbColumn("Alamat")]
@@ -176,6 +186,7 @@ namespace HeriIOApp.ModelData
             get; set;
         }
         public pembayaran Panjar { get;  set; }
+        public jenisevent JenisEvent { get; internal set; }
 
         private int  _id;
            private int  _idpelanggan;
@@ -190,6 +201,7 @@ namespace HeriIOApp.ModelData
         private int _codeValidate;
         private int _jumlahUndangan;
         private int _JenisEventId; private bool _CancelByUser;
+        private DateTime? _tanggalselesai;
 
         public pemesanan(pemesanan p)
         {
@@ -208,7 +220,7 @@ namespace HeriIOApp.ModelData
             this.Tanggal = p.Tanggal;
             this.TanggalAcara = p.TanggalAcara;
             this.VerifikasiPembayaran = p.VerifikasiPembayaran;
-            
+            this.TanggalSelesai = p.TanggalSelesai;
         }
 
         public pemesanan()

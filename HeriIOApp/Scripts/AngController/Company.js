@@ -45,6 +45,35 @@ var app = angular.module('Company', ['ngRoute', 'ui.tinymce'])
 
     }
 
+    service.tinymceOptions = {
+        selector: "textarea",
+        plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table contextmenu paste ',
+                'textcolor'
+        ],
+        toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image responsivefilemanager | code | fontselect | forecolor backcolor',
+        font_formats: 'Arial=arial,helvetica,sans-serif;Courier New=courier new,courier,monospace;AkrutiKndPadmini=Akpdmi-n' + "Andale Mono=andale mono,times;" +
+               "Arial=arial,helvetica,sans-serif;" +
+               "Arial Black=arial black,avant garde;" +
+               "Book Antiqua=book antiqua,palatino;" +
+               "Comic Sans MS=comic sans ms,sans-serif;" +
+               "Courier New=courier new,courier;" +
+               "Georgia=georgia,palatino;" +
+               "Helvetica=helvetica;" +
+               "Impact=impact,chicago;" +
+               "Symbol=symbol;" +
+               "Tahoma=tahoma,arial,helvetica,sans-serif;" +
+               "Terminal=terminal,monaco;" +
+               "Times New Roman=times new roman,times;" +
+               "Trebuchet MS=trebuchet ms,geneva;" +
+               "Verdana=verdana,geneva;" +
+               "Webdings=webdings;" +
+               "Wingdings=wingdings,zapf dingbats",
+        image_advtab: true,
+
+    };
 
     return service;
 
@@ -137,16 +166,7 @@ var app = angular.module('Company', ['ngRoute', 'ui.tinymce'])
 })
 
  .controller('MenuController', function ($scope, $http, CompanyService, ProfileService,$sce,$rootScope) {
-     $scope.tinymceOptions = {
-         onChange: function (e) {
-             // put logic here for keypress and cut/paste changes
-         },
-         inline: false,
-         plugins: 'advlist autolink link image lists charmap print preview',
-         skin: 'lightgray',
-         theme: 'modern'
-     };
-
+     $scope.tinymceOptions = CompanyService.tinymceOptions;
      $scope.Judul = "Menu Utama";
      $scope.serviceProfile = ProfileService;
      $scope.UserProfile = {};
@@ -195,9 +215,9 @@ var app = angular.module('Company', ['ngRoute', 'ui.tinymce'])
          }).error(function (response, data) {
              alert(response.responseText);
          });
-
-
      }
+
+
      $scope.UpdatePageImage = function (source, destination) {
          ProfileService.ShowImage(source, destination);
          var f = document.getElementById(source);
@@ -282,7 +302,8 @@ var app = angular.module('Company', ['ngRoute', 'ui.tinymce'])
      
  })
 
-    .controller('LayananController', function ($scope, $http, CompanyService,$sce) {
+    .controller('LayananController', function ($scope, $http, CompanyService, $sce) {
+        $scope.tinymceOptions = CompanyService.tinymceOptions;
         $scope.Judul = "Daftar Layanan";
         $scope.ListLayanan = [];
         $scope.Init = function () {
@@ -332,7 +353,6 @@ var app = angular.module('Company', ['ngRoute', 'ui.tinymce'])
             form.append("Id",value.Id)
             form.append("Nama", value.Nama);
             form.append("Stok", value.Stok);
-            form.append("Unit", value.Unit);
             form.append("Harga", value.Harga);
             form.append("Keterangan",value.Keterangan);
 
@@ -436,14 +456,14 @@ var app = angular.module('Company', ['ngRoute', 'ui.tinymce'])
     })
 
 
- .controller('PenawaranController', function ($scope, $http, CompanyService, $route, $routeParams,$location) {
+ .controller('PenawaranController', function ($scope, $http, CompanyService, $route, $routeParams,$location,$sce) {
      $scope.Init = function () {
-    
-         if($routeParams.Id!=undefined)
+         var url = "";
+         if($routeParams.Id !== undefined)
          {
              $scope.Judul = "Pengajuan Penawaran";
              var id = $routeParams.Id;
-             var url = "/api/Company/GetPesananById?Id="+id;
+             url = "/api/Company/GetPesananById?Id="+id;
              $http({
                  method: 'GET',
                  url: url,
@@ -451,7 +471,7 @@ var app = angular.module('Company', ['ngRoute', 'ui.tinymce'])
                  function (data, status, header, cfg) {
                      $scope.Pesanan = angular.fromJson(data);
 
-                     if($scope.Pesanan.Bid!=null)
+                     if($scope.Pesanan.Bid !== null)
                      {
                          $scope.Message = "Anda Telah Mengajukan Penawaran Untuk Event Ini";
                          $scope.IsMessageShow = true;
@@ -477,7 +497,7 @@ var app = angular.module('Company', ['ngRoute', 'ui.tinymce'])
          } else
          {
              $scope.Judul = "Daftar Penawaran";
-             var url = "/api/Company/GetMyPenawaran";
+             url = "/api/Company/GetMyPenawaran";
              $http({
                  method: 'GET',
                  url: url,
@@ -499,7 +519,9 @@ var app = angular.module('Company', ['ngRoute', 'ui.tinymce'])
 
      $scope.SelectedItemAction=function(item)
      {
+         $scope.Selecteditem = {};
          $scope.Selecteditem = item;
+         $scope.Selecteditem.DetailPenawaranHtml = $sce.trustAsHtml(item.DetailPenawaran);
      }  
 
      $scope.Bid=function(model)
@@ -592,6 +614,7 @@ var app = angular.module('Company', ['ngRoute', 'ui.tinymce'])
      };
 
      $scope.ShowMessage = function (item) {
+         $scope.SelectedMessage= {};
          $scope.SelectedMessage = item;
          $scope.SelectedMessage.HtmlPesan = $sce.trustAsHtml(item.Pesan);
          CompanyService.ReadMessage(item);

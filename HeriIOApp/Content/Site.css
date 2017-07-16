@@ -29,6 +29,12 @@ input[type=checkbox] {
 }
 
 
+
+.noverification {
+    color: red;
+    font-weight: bold;
+}
+
 .TableHeader{
     background:rgba(247, 247, 247, 0.18)
 }
@@ -36,10 +42,9 @@ input[type=checkbox] {
 .panel-transparan {
     background-color:rgba(191, 193, 188, 0.33);
 
-.panel-transparan .panel-body{
+.panel-transparan .panel-body {
     background:rgba(25, 90, 245, 0.19)
 }
-
 
 .modal-backdrop{
     opacity:0 ;
